@@ -55,7 +55,7 @@ class GoogleImageScraper():
                         image_urls.append(image.get_attribute("src"))
                         
                 #scroll page to load next image
-                driver.execute_script("window.scrollTo(0, "+str(indx*100)+");")
+                driver.execute_script("window.scrollTo(0, "+str(indx*150)+");")
                 time.sleep(3)
         except Exception:
             print("GoogleImageScraper: System Crashed. Returning saved image urls.")
