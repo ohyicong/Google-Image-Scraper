@@ -4,14 +4,7 @@ Created on Sun Jul 12 11:02:06 2020
 
 @author: OHyic
 
-T
 """
-
-
-#pip install selenium
-#install chrome
-#download chromedriver based on your chrome version
-
 from GoogleImageScrapper import GoogleImageScraper
 import os
 
