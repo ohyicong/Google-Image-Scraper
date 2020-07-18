@@ -8,6 +8,7 @@
  
  
 Usage:
+
 import os
 
 from GoogleImageScrapper import GoogleImageScraper
