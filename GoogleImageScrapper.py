@@ -37,25 +37,30 @@ class GoogleImageScraper():
         driver.get(self.url)
         time.sleep(5)
         image_urls=[]
-        for indx in range (1,self.number_of_images+1):
-            #find and click image
-            imgurl = driver.find_element_by_xpath('//div//div//div//div//div//div//div//div//div//div[%s]//a[1]//div[1]//img[1]'%(str(indx)))
-            imgurl.click()
-            
-            #select image from the popup
-            time.sleep(3)
-            images = driver.find_elements_by_class_name("n3VNCb")
-            print(indx)
-            for image in images:
+        try:
+            for indx in range (1,self.number_of_images+1):
+                #find and click image
+                imgurl = driver.find_element_by_xpath('//div//div//div//div//div//div//div//div//div//div[%s]//a[1]//div[1]//img[1]'%(str(indx)))
+                imgurl.click()
                 
-                #only download images that ends with jpg/png/jpeg extensions
-                if (image.get_attribute("src")[-3:].lower() in ["jpg","png","jpeg"]):
-                    print(image.get_attribute("src"))
-                    image_urls.append(image.get_attribute("src"))
+                #select image from the popup
+                time.sleep(3)
+                images = driver.find_elements_by_class_name("n3VNCb")
+                print(indx)
+                for image in images:
                     
-            #scroll page to load next image
-            driver.execute_script("window.scrollTo(0, "+str(indx*100)+");")
-            time.sleep(3)
+                    #only download images that ends with jpg/png/jpeg extensions
+                    if (image.get_attribute("src")[-3:].lower() in ["jpg","png","jpeg"]):
+                        print(image.get_attribute("src"))
+                        image_urls.append(image.get_attribute("src"))
+                        
+                #scroll page to load next image
+                driver.execute_script("window.scrollTo(0, "+str(indx*100)+");")
+                time.sleep(3)
+        except Exception:
+            print("GoogleImageScraper: System Crashed. Returning saved image urls.")
+            driver.close()
+            return image_urls     
         
         driver.close()
         return image_urls
