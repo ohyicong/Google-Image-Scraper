@@ -9,9 +9,9 @@ from GoogleImageScrapper import GoogleImageScraper
 import os
 
 webdriver_path = os.getcwd()+"\\webdriver\\chromedriver.exe"
-image_path = os.getcwd()+"\\photos"
+image_path = os.getcwd()+"\\photo\\cat"
 search_key= "cat"
-number_of_images = 10
+number_of_images = 5
 image_scrapper = GoogleImageScraper(webdriver_path,image_path,search_key,number_of_images)
 image_urls = image_scrapper.find_image_urls()
 image_scrapper.save_images(image_urls)

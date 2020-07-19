@@ -17,8 +17,11 @@ class GoogleImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1):
         #check parameter types
         if (type(number_of_images)!=int):
-            print("GoogleImageScraper: Number of images must be integer value")
+            print("GoogleImageScraper Error: Number of images must be integer value.")
             return
+        if not os.path.exists(image_path):
+            print("GoogleImageScraper Notification: Image path not found. Creating a new folder.")
+            os.makedirs(image_path)
         self.search_key = search_key
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
@@ -58,7 +61,7 @@ class GoogleImageScraper():
                 driver.execute_script("window.scrollTo(0, "+str(indx*150)+");")
                 time.sleep(3)
         except Exception:
-            print("GoogleImageScraper: System Crashed. Returning saved image urls.")
+            print("GoogleImageScraper Error: System Crashed. Returning saved image urls.")
             driver.close()
             return image_urls     
         
@@ -84,7 +87,8 @@ class GoogleImageScraper():
                     with open(image_path, 'wb') as f:
                         f.write(image.content)
             except Exception:
-                print("GoogleImageScraper: %s failed to be downloaded"%(image_url))
+                print("GoogleImageScraper Error: %s failed to be downloaded."%(image_url))
                 pass
+        print("GoogleImageScraper Notification: Download Completed.")
     
 
