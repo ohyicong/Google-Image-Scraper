@@ -4,9 +4,11 @@ Created on Sat Jul 18 13:01:02 2020
 
 @author: OHyic
 """
-
-#pip install selenium
+#import selenium drivers
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+#import helper libraries
 import time
 import urllib.request
 import shutil
@@ -14,7 +16,7 @@ import os
 import requests
 
 class GoogleImageScraper():
-    def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1):
+    def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False):
         #check parameter types
         if (type(number_of_images)!=int):
             print("GoogleImageScraper Error: Number of images must be integer value.")
@@ -27,7 +29,7 @@ class GoogleImageScraper():
         self.webdriver_path = webdriver_path
         self.image_path = image_path
         self.url = "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key)
-
+        self.headless=headless
     def find_image_urls(self):
         """
             This function search and return a list of image urls based on the search key.
@@ -36,7 +38,11 @@ class GoogleImageScraper():
                 image_urls = google_image_scraper.find_image_urls()
                 
         """
-        driver = webdriver.Chrome(self.webdriver_path) 
+        options = Options()
+        if(self.headless):
+            options.add_argument('--headless')
+        
+        driver = webdriver.Chrome(self.webdriver_path, chrome_options=options)
         driver.get(self.url)
         time.sleep(5)
         image_urls=[]
