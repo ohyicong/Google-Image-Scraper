@@ -14,9 +14,12 @@ import urllib.request
 import shutil
 import os
 import requests
+import struct
+import imghdr
+
 
 class GoogleImageScraper():
-    def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False):
+    def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
         #check parameter types
         if (type(number_of_images)!=int):
             print("GoogleImageScraper Error: Number of images must be integer value.")
@@ -30,6 +33,8 @@ class GoogleImageScraper():
         self.image_path = image_path
         self.url = "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key)
         self.headless=headless
+        self.min_resolution = min_resolution
+        self.max_resolution = max_resolution
     def find_image_urls(self):
         """
             This function search and return a list of image urls based on the search key.
@@ -84,6 +89,7 @@ class GoogleImageScraper():
                 google_image_scraper.save_images(image_urls)
                 
         """
+        print("GoogleImageScraper Notification: Saving Image... Please wait.")
         for indx,image_url in enumerate(image_urls):
             try:
                 filename = self.search_key+str(indx)+'.jpg'
@@ -92,9 +98,51 @@ class GoogleImageScraper():
                 if image.status_code == 200:
                     with open(image_path, 'wb') as f:
                         f.write(image.content)
+                    image_resolution = self.get_image_size(image_path)
+                    if image_resolution != None:
+                        if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
+                            #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
+                            os.remove(image_path)
+                        
+
             except Exception:
                 print("GoogleImageScraper Error: %s failed to be downloaded."%(image_url))
                 pass
         print("GoogleImageScraper Notification: Download Completed.")
     
-
+    def get_image_size(self,fname):
+        '''Determine the image type of fhandle and return its size.
+        '''
+        with open(fname, 'rb') as fhandle:
+            head = fhandle.read(24)
+            if len(head) != 24:
+                return None
+            if imghdr.what(fname) == 'png':
+                check = struct.unpack('>i', head[4:8])[0]
+                if check != 0x0d0a1a0a:
+                    return None
+                width, height = struct.unpack('>ii', head[16:24])
+                return (width, height)
+            elif imghdr.what(fname) == 'gif':
+                width, height = struct.unpack('<HH', head[6:10])
+                return (width, height)
+            elif imghdr.what(fname) == 'jpeg':
+                try:
+                    fhandle.seek(0) # Read 0xff next
+                    size = 2
+                    ftype = 0
+                    while not 0xc0 <= ftype <= 0xcf:
+                        fhandle.seek(size, 1)
+                        byte = fhandle.read(1)
+                        while ord(byte) == 0xff:
+                            byte = fhandle.read(1)
+                        ftype = ord(byte)
+                        size = struct.unpack('>H', fhandle.read(2))[0] - 2
+                    # We are at a SOFn block
+                    fhandle.seek(1, 1)  # Skip `precision' byte.
+                    height, width = struct.unpack('>HH', fhandle.read(4))
+                    return (width, height)
+                except Exception: #IGNORE:W0703
+                    return None
+            else:
+                return None
