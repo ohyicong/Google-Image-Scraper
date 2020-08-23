@@ -11,7 +11,7 @@ import os
 webdriver_path = os.getcwd()+"\\webdriver\\chromedriver.exe"
 image_path = os.getcwd()+"\\photos"
 search_key= "cat"
-number_of_images = 100
+number_of_images = 20
 headless = False
 #min_resolution = (width,height)
 min_resolution=(0,0)

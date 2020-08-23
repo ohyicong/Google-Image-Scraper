@@ -51,10 +51,11 @@ class GoogleImageScraper():
         driver.get(self.url)
         time.sleep(5)
         image_urls=[]
-        try:
-            for indx in range (1,self.number_of_images+1):
+        
+        for indx in range (1,self.number_of_images+1):
+            try:
                 #find and click image
-                imgurl = driver.find_element_by_xpath('//div//div//div//div//div//div//div//div//div//div[%s]//a[1]//div[1]//img[1]'%(str(indx)))
+                imgurl = driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
                 imgurl.click()
                 
                 #select image from the popup
@@ -64,17 +65,18 @@ class GoogleImageScraper():
                 for image in images:
                     
                     #only download images that ends with jpg/png/jpeg extensions
+                   
                     if (image.get_attribute("src")[-3:].lower() in ["jpg","png","jpeg"]):
                         print(image.get_attribute("src"))
                         image_urls.append(image.get_attribute("src"))
+                        break
                         
                 #scroll page to load next image
                 driver.execute_script("window.scrollTo(0, "+str(indx*150)+");")
                 time.sleep(3)
-        except Exception:
-            print("GoogleImageScraper Error: System Crashed. Returning saved image urls.")
-            driver.close()
-            return image_urls     
+            except Exception as e:
+                print("GoogleImageScraper Skip: Unable to get the link for this photo")
+             
         
         driver.close()
         return image_urls
@@ -99,39 +101,37 @@ class GoogleImageScraper():
                     with open(image_path, 'wb') as f:
                         f.write(image.content)
                     image_resolution = self.get_image_size(image_path)
+                   
                     if image_resolution != None:
                         if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
                             #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
                             os.remove(image_path)
-                        
+                 
 
             except Exception:
-                print("GoogleImageScraper Error: %s failed to be downloaded."%(image_url))
+                #print("GoogleImageScraper Error: Failed to be downloaded.")
                 pass
         print("GoogleImageScraper Notification: Download Completed.")
     
     def get_image_size(self,fname):
-        '''Determine the image type of fhandle and return its size.
-        '''
         with open(fname, 'rb') as fhandle:
             head = fhandle.read(24)
             if len(head) != 24:
                 return None
-            if imghdr.what(fname) == 'png':
+            what = imghdr.what(None, head)
+            if what == 'png':
                 check = struct.unpack('>i', head[4:8])[0]
                 if check != 0x0d0a1a0a:
                     return None
                 width, height = struct.unpack('>ii', head[16:24])
-                return (width, height)
-            elif imghdr.what(fname) == 'gif':
+            elif what == 'gif':
                 width, height = struct.unpack('<HH', head[6:10])
-                return (width, height)
-            elif imghdr.what(fname) == 'jpeg':
+            elif what == 'jpeg':
                 try:
                     fhandle.seek(0) # Read 0xff next
                     size = 2
                     ftype = 0
-                    while not 0xc0 <= ftype <= 0xcf:
+                    while not 0xc0 <= ftype <= 0xcf or ftype in (0xc4, 0xc8, 0xcc):
                         fhandle.seek(size, 1)
                         byte = fhandle.read(1)
                         while ord(byte) == 0xff:
@@ -141,8 +141,8 @@ class GoogleImageScraper():
                     # We are at a SOFn block
                     fhandle.seek(1, 1)  # Skip `precision' byte.
                     height, width = struct.unpack('>HH', fhandle.read(4))
-                    return (width, height)
                 except Exception: #IGNORE:W0703
                     return None
             else:
                 return None
+            return width, height
