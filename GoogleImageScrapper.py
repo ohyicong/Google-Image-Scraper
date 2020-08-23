@@ -43,6 +43,7 @@ class GoogleImageScraper():
                 image_urls = google_image_scraper.find_image_urls()
                 
         """
+        print("GoogleImageScraper Notification: Scraping for image link... Please wait.")
         options = Options()
         if(self.headless):
             options.add_argument('--headless')
@@ -94,6 +95,7 @@ class GoogleImageScraper():
         print("GoogleImageScraper Notification: Saving Image... Please wait.")
         for indx,image_url in enumerate(image_urls):
             try:
+                print(indx)
                 filename = self.search_key+str(indx)+'.jpg'
                 image_path = os.path.join(self.image_path, filename)
                 image = requests.get(image_url)
