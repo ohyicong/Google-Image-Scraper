@@ -62,13 +62,12 @@ class GoogleImageScraper():
                 #select image from the popup
                 time.sleep(3)
                 images = driver.find_elements_by_class_name("n3VNCb")
-                print(indx)
                 for image in images:
                     
                     #only download images that ends with jpg/png/jpeg extensions
                    
                     if (image.get_attribute("src")[-3:].lower() in ["jpg","png","jpeg"]):
-                        print(image.get_attribute("src"))
+                        print("%d. %s"%(indx,image.get_attribute("src")))
                         image_urls.append(image.get_attribute("src"))
                         break
                         
@@ -95,9 +94,10 @@ class GoogleImageScraper():
         print("GoogleImageScraper Notification: Saving Image... Please wait.")
         for indx,image_url in enumerate(image_urls):
             try:
-                print(indx)
+                
                 filename = self.search_key+str(indx)+'.jpg'
                 image_path = os.path.join(self.image_path, filename)
+                print("%d .Image saved at: %s"%(indx,image_path))
                 image = requests.get(image_url)
                 if image.status_code == 200:
                     with open(image_path, 'wb') as f:
