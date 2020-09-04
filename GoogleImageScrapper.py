@@ -44,6 +44,8 @@ class GoogleImageScraper():
                 
         """
         print("GoogleImageScraper Notification: Scraping for image link... Please wait.")
+        image_urls=[]
+        count = 0
         options = Options()
         if(self.headless):
             options.add_argument('--headless')
@@ -51,7 +53,6 @@ class GoogleImageScraper():
         driver = webdriver.Chrome(self.webdriver_path, chrome_options=options)
         driver.get(self.url)
         time.sleep(5)
-        image_urls=[]
         
         for indx in range (1,self.number_of_images+1):
             try:
@@ -67,8 +68,9 @@ class GoogleImageScraper():
                     #only download images that ends with jpg/png/jpeg extensions
                    
                     if (image.get_attribute("src")[-3:].lower() in ["jpg","png","jpeg"]):
-                        print("%d. %s"%(indx,image.get_attribute("src")))
+                        print("%d. %s"%(count,image.get_attribute("src")))
                         image_urls.append(image.get_attribute("src"))
+                        count +=1
                         break
                         
                 #scroll page to load next image
