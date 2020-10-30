@@ -49,11 +49,13 @@ class GoogleImageScraper():
         options = Options()
         if(self.headless):
             options.add_argument('--headless')
-        
-        driver = webdriver.Chrome(self.webdriver_path, chrome_options=options)
-        driver.get(self.url)
-        time.sleep(5)
-        
+        try:
+            driver = webdriver.Chrome(self.webdriver_path, chrome_options=options)
+            driver.get(self.url)
+            time.sleep(5)
+        except:
+            print("[-] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
+
         for indx in range (1,self.number_of_images+1):
             try:
                 #find and click image
