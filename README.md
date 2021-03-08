@@ -1,5 +1,5 @@
 # Google Image Scraper
-##A library to scrap google images
+## A library to scrap google images
 Pre-requisites:
 1. Pip install Selenium Library
 2. Pip install PIL
@@ -8,10 +8,10 @@ Pre-requisites:
 
  
  
-##Example:
+## Example:
 run main.py
 
-##Usage:
+## Usage:
 ```
 from GoogleImageScrapper import GoogleImageScraper
 import os
