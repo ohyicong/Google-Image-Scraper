@@ -14,11 +14,11 @@ run main.py
 
 ## Usage:
 ```
-#Import libraries
+#Import libraries (Don't change)
 from GoogleImageScrapper import GoogleImageScraper
 import os
 
-#Define file path
+#Define file path (Don't change)
 webdriver_path = os.getcwd()+"\\webdriver\\chromedriver.exe"
 image_path = os.getcwd()+"\\photos"
 
