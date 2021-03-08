@@ -18,7 +18,7 @@ search_keys= ["cat","t-shirt"]
 
 #Parameters
 number_of_images = 10
-headless = True
+headless = False
 min_resolution=(0,0)
 max_resolution=(1920,1080)
 
