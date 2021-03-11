@@ -57,6 +57,7 @@ class GoogleImageScraper():
             options.add_argument('--headless')
         try:
             driver = webdriver.Chrome(self.webdriver_path, chrome_options=options)
+            driver.set_window_size(1400,1050)
             driver.get(self.url)
             time.sleep(5)
         except:
@@ -81,7 +82,7 @@ class GoogleImageScraper():
                         count +=1
                         break
                 #scroll page to load next image
-                driver.execute_script("window.scrollTo(0, "+str(indx*150)+");")
+                driver.execute_script("window.scrollTo(0, "+str(indx*100)+");")
                 time.sleep(1)
             except Exception as e:
                 print("GoogleImageScraper Skip: Unable to get the link for this photo",e)
@@ -108,14 +109,17 @@ class GoogleImageScraper():
                 if image.status_code == 200:
                     with open(image_path, 'wb') as f:
                         f.write(image.content)
-                    image_from_web = Image.open(image_path)
-                    image_resolution = image_from_web.size
-                    if image_resolution != None:
-                        if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
-                            #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
-                            os.remove(image_path)
+                        f.close()
+                        image_from_web = Image.open(image_path)
+                        image_resolution = image_from_web.size
+                        if image_resolution != None:
+                            if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
+                                image_from_web.close()
+                                #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
+                                os.remove(image_path)
+                        image_from_web.close()
             except Exception as e:
-                #print("GoogleImageScraper Error: Failed to be downloaded.")
+                print("GoogleImageScraper Error: Failed to be downloaded.",e)
                 pass
         print("GoogleImageScraper Notification: Download Completed.")
         
