@@ -10,8 +10,8 @@ from GoogleImageScrapper import GoogleImageScraper
 import os
 
 #Define file path
-webdriver_path = os.getcwd()+"\\webdriver\\chromedriver.exe"
-image_path = os.getcwd()+"\\photos"
+webdriver_path = os.path.normpath(os.getcwd()+"\\webdriver\\chromedriver.exe")
+image_path = os.path.normpath(os.getcwd()+"\\photos")
 
 #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
 search_keys= ["cat","t-shirt"]
