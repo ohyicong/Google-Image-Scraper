@@ -19,8 +19,8 @@ from GoogleImageScrapper import GoogleImageScraper
 import os
 
 #Define file path (Don't change)
-webdriver_path = os.getcwd()+"\\webdriver\\chromedriver.exe"
-image_path = os.getcwd()+"\\photos"
+webdriver_path = os.path.normpath(os.getcwd()+"\\webdriver\\chromedriver.exe")
+image_path = os.path.normpath(os.getcwd()+"\\photos")
 
 #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
 search_keys= ["cat","t-shirt"]
@@ -39,6 +39,6 @@ for search_key in search_keys:
 
 ```
 ## Youtube Video:
-[![IMAGE ALT TEXT](https://i9.ytimg.com/vi/QZn_ZxpsIw4/sddefault.jpg?time=1615208400000&sqp=CNC_mIIG&rs=AOn4CLB_nrD5FreT5NZgxmuJ93PYKKGvow)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
+[![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
 
 Do remember to like, share and subscribe!
