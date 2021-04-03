@@ -10,15 +10,13 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException       
 
 #import helper libraries
 import time
 import urllib.request
-import shutil
 import os
 import requests
-import struct
-import imghdr
 from PIL import Image
 
 class GoogleImageScraper():
@@ -49,9 +47,10 @@ class GoogleImageScraper():
                 image_urls = google_image_scraper.find_image_urls()
                 
         """
-        print("GoogleImageScraper Notification: Scraping for image link... Please wait.")
+        print("[+] Scraping for image link... Please wait.")
         image_urls=[]
         count = 0
+        missed_count = 0
         options = Options()
         if(self.headless):
             options.add_argument('--headless')
@@ -68,12 +67,21 @@ class GoogleImageScraper():
                 #find and click image
                 imgurl = driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
                 imgurl.click()
-                
+                missed_count = 0 
+            except Exception:
+                #print("[-] Unable to click this photo.")
+                missed_count = missed_count + 1
+                if (missed_count>10):
+                    print("[+] No more photos.")
+                    break
+                else:
+                    continue
+                 
+            try:
                 #select image from the popup
                 time.sleep(1)
-                WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "n3VNCb")))
-                images = driver.find_elements_by_class_name("n3VNCb")
-                
+                class_names = ["n3VNCb","Sva75c"]
+                images = [driver.find_elements_by_class_name(class_name) for class_name in class_names if len(driver.find_elements_by_class_name(class_name)) != 0 ][0]
                 for image in images:
                     #only download images that starts with http
                     if(image.get_attribute("src")[:4].lower() in ["http"]):
@@ -81,14 +89,24 @@ class GoogleImageScraper():
                         image_urls.append(image.get_attribute("src"))
                         count +=1
                         break
+            except Exception:
+                print("[-] Unable to get link")   
+                
+            try:
                 #scroll page to load next image
                 driver.execute_script("window.scrollTo(0, "+str(indx*100)+");")
+                element = driver.find_element_by_class_name("mye4qd")
+                element.click()
+                print("[+] Loading more photos")
+                time.sleep(5)
+            except Exception:  
                 time.sleep(1)
-            except Exception as e:
-                print("GoogleImageScraper Skip: Unable to get the link for this photo",e)
+         
+        
         driver.close()
+        print("[+] Google search ended")
         return image_urls
-    
+
     def save_images(self,image_urls):
         #save images into file directory
         """
@@ -99,7 +117,7 @@ class GoogleImageScraper():
                 google_image_scraper.save_images(image_urls)
                 
         """
-        print("GoogleImageScraper Notification: Saving Image... Please wait.")
+        print("[+] Saving Image... Please wait.")
         for indx,image_url in enumerate(image_urls):
             try:
                 filename = "%s%s.%s"%(self.search_key,str(indx),self.saved_extension)
@@ -121,5 +139,5 @@ class GoogleImageScraper():
             except Exception as e:
                 print("GoogleImageScraper Error: Failed to be downloaded.",e)
                 pass
-        print("GoogleImageScraper Notification: Download Completed.")
+        print("[+] Download Completed. Please note that some photos is not downloaded as it is not in the right format (e.g. jpg, jpeg, png)")
         

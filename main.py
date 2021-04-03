@@ -17,10 +17,10 @@ image_path = os.path.normpath(os.getcwd()+"\\photos")
 search_keys= ["cat","t-shirt"]
 
 #Parameters
-number_of_images = 10
+number_of_images = 20
 headless = False
 min_resolution=(0,0)
-max_resolution=(1920,1080)
+max_resolution=(1000,1000)
 
 #Main program
 for search_key in search_keys:
