@@ -80,7 +80,7 @@ class GoogleImageScraper():
             try:
                 #select image from the popup
                 time.sleep(1)
-                class_names = ["n3VNCb","Sva75c"]
+                class_names = ["n3VNCb"]
                 images = [driver.find_elements_by_class_name(class_name) for class_name in class_names if len(driver.find_elements_by_class_name(class_name)) != 0 ][0]
                 for image in images:
                     #only download images that starts with http
