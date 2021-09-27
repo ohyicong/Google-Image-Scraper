@@ -52,8 +52,8 @@ class GoogleImageScraper():
                 else:
                     is_patched = patch.download_lastest_chromedriver(driver.capabilities['version'])
                 if (not is_patched): 
-                    print("[WARN] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
-                    break
+                    exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
+                    
         self.driver = driver
         self.search_key = search_key
         self.number_of_images = number_of_images
