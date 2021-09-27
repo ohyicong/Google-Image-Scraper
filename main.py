@@ -14,10 +14,10 @@ webdriver_path = os.path.normpath(os.getcwd()+"\\webdriver\\chromedriver.exe")
 image_path = os.path.normpath(os.getcwd()+"\\photos")
 
 #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
-search_keys= ["dog","cat"]
+search_keys= ['apple','t-shirt']
 
 #Parameters
-number_of_images = 10
+number_of_images = 100
 headless = False
 min_resolution=(0,0)
 max_resolution=(9999,9999)

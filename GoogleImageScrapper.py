@@ -17,6 +17,7 @@ import time
 import urllib.request
 import os
 import requests
+import io
 from PIL import Image
 
 #custom patch libraries
@@ -138,21 +139,22 @@ class GoogleImageScraper():
         print("[INFO] Saving Image... Please wait...")
         for indx,image_url in enumerate(image_urls):
             try:
-                filename = "%s%s.%s"%(self.search_key,str(indx),self.saved_extension)
+                print("[INFO] Image url:%s"%(image_url))
+                search_string = ''.join(e for e in self.search_key if e.isalnum())
+                filename = "%s%s.%s"%(search_string,str(indx),self.saved_extension)
                 image_path = os.path.join(self.image_path, filename)
                 print("[INFO] %d .Image saved at: %s"%(indx,image_path))
-                image = requests.get(image_url)
+                image = requests.get(image_url,timeout=5)
                 if image.status_code == 200:
-                    with open(image_path, 'wb') as f:
-                        f.write(image.content)
-                        f.close()
-                        image_from_web = Image.open(image_path)
+                    with Image.open(io.BytesIO(image.content)) as image_from_web:
+                        image_from_web.save(image_path)
                         image_resolution = image_from_web.size
                         if image_resolution != None:
                             if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
                                 image_from_web.close()
                                 #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
                                 os.remove(image_path)
+
                         image_from_web.close()
             except Exception as e:
                 print("[ERROR] Failed to be downloaded",e)
