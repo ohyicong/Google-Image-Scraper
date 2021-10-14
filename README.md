@@ -7,10 +7,20 @@ A library to scrap google images
 3. Download Google Chrome 
 4. Download Google Webdriver based on your Chrome version
 
-## Example:
-```
-run main.py
-```
+## Setup:
+1. Open cmd
+2. Clone the repository (or [download](https://github.com/ohyicong/Google-Image-Scraper/archive/refs/heads/master.zip))
+    ```
+    git clone https://github.com/ohyicong/Google-Image-Scraper
+    ```
+3. Install Dependencies
+    ```
+    pip install selenium, requests, pillow
+    ```
+4. Run the code
+    ```
+    python main.py
+    ```
 
 ## Usage:
 ```
