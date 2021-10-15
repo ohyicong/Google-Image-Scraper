@@ -26,6 +26,7 @@ import patch
 class GoogleImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
         #check parameter types
+        image_path += "\\"+search_key
         if (type(number_of_images)!=int):
             print("[Error] Number of images must be integer value.")
             return
@@ -80,7 +81,8 @@ class GoogleImageScraper():
         missed_count = 0
         self.driver.get(self.url)
         time.sleep(5)
-        for indx in range (1,self.number_of_images+1):
+        indx = 1
+        while self.number_of_images != count:
             try:
                 #find and click image
                 imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
@@ -120,7 +122,8 @@ class GoogleImageScraper():
                 time.sleep(5)
             except Exception:  
                 time.sleep(1)
-         
+            indx += 1
+
         
         self.driver.quit()
         print("[INFO] Google search ended")
@@ -147,7 +150,11 @@ class GoogleImageScraper():
                 image = requests.get(image_url,timeout=5)
                 if image.status_code == 200:
                     with Image.open(io.BytesIO(image.content)) as image_from_web:
-                        image_from_web.save(image_path)
+                        try:
+                            image_from_web.save(image_path)
+                        except OSError:
+                            rgb_im = image_from_web.convert('RGB')
+                            rgb_im.save(image_path)
                         image_resolution = image_from_web.size
                         if image_resolution != None:
                             if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
