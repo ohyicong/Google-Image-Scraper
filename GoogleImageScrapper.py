@@ -64,8 +64,6 @@ class GoogleImageScraper():
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
-        self.saved_extension = "jpg"
-        self.valid_extensions = ["jpg","png","jpeg"]
         
     def find_image_urls(self):
         """
@@ -82,7 +80,7 @@ class GoogleImageScraper():
         self.driver.get(self.url)
         time.sleep(5)
         indx = 1
-        while self.number_of_images != count:
+        while self.number_of_images >= count:
             try:
                 #find and click image
                 imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
@@ -94,8 +92,6 @@ class GoogleImageScraper():
                 if (missed_count>10):
                     print("[INFO] No more photos.")
                     break
-                else:
-                    continue
                  
             try:
                 #select image from the popup
@@ -144,13 +140,13 @@ class GoogleImageScraper():
             try:
                 print("[INFO] Image url:%s"%(image_url))
                 search_string = ''.join(e for e in self.search_key if e.isalnum())
-                filename = "%s%s.%s"%(search_string,str(indx),self.saved_extension)
-                image_path = os.path.join(self.image_path, filename)
-                print("[INFO] %d .Image saved at: %s"%(indx,image_path))
                 image = requests.get(image_url,timeout=5)
                 if image.status_code == 200:
                     with Image.open(io.BytesIO(image.content)) as image_from_web:
                         try:
+                            filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+                            image_path = os.path.join(self.image_path, filename)
+                            print("[INFO] %d .Image saved at: %s"%(indx,image_path))
                             image_from_web.save(image_path)
                         except OSError:
                             rgb_im = image_from_web.convert('RGB')
