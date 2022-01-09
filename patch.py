@@ -16,6 +16,11 @@ import zipfile
 import stat
 from sys import platform
 
+def webdriver_executable():
+    if platform == "linux" or platform == "linux2" or platform == "darwin":
+        return 'chromedriver'
+    return 'chromedriver.exe'
+
 def download_lastest_chromedriver(current_chrome_version=""):
     def get_platform_filename():
         filename = ''
@@ -68,14 +73,13 @@ def download_lastest_chromedriver(current_chrome_version=""):
             # Download the file.
             print('[INFO] downloading chromedriver ver: %s: %s'% (version, driver_url))
             app_path = os.path.dirname(os.path.realpath(__file__))
-            chromedriver_path = os.path.normpath(app_path+"\\webdriver\\chromedriver.exe")
-            file_path = os.path.normpath(app_path + '\\webdriver\\' + file_name)
+            chromedriver_path = os.path.normpath(os.path.join(app_path, 'webdriver', webdriver_executable()))
+            file_path = os.path.normpath(os.path.join(app_path, 'webdriver', file_name))
             urllib.request.urlretrieve(driver_url, file_path)
     
             # Unzip the file into folder
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
-                zip_ref.extractall(os.path.normpath(app_path + '\\webdriver\\'))
-    
+                zip_ref.extractall(os.path.normpath(os.path.join(app_path, 'webdriver')))
             st = os.stat(chromedriver_path)
             os.chmod(chromedriver_path, st.st_mode | stat.S_IEXEC)
             print('[INFO] lastest chromedriver downloaded')
