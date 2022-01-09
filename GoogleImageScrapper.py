@@ -26,7 +26,7 @@ import patch
 class GoogleImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
         #check parameter types
-        image_path += "\\"+search_key
+        image_path = os.path.join(image_path, search_key)
         if (type(number_of_images)!=int):
             print("[Error] Number of images must be integer value.")
             return

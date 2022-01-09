@@ -8,18 +8,18 @@ Created on Sun Jul 12 11:02:06 2020
 #Import libraries
 from GoogleImageScrapper import GoogleImageScraper
 import os
-
+from patch import webdriver_executable
 
 if __name__ == "__main__":
     #Define file path
-    webdriver_path = os.path.normpath(os.getcwd()+"\\webdriver\\chromedriver.exe")
-    image_path = os.path.normpath(os.getcwd()+"\\photos")
+    webdriver_path = os.path.normpath(os.path.join(os.getcwd(), 'webdriver', webdriver_executable()))
+    image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
 
     #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
     search_keys= ['apple','t-shirt']
 
     #Parameters
-    number_of_images = 100
+    number_of_images = 2
     headless = False
     min_resolution=(0,0)
     max_resolution=(9999,9999)

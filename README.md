@@ -23,14 +23,15 @@ A library to scrap google images
     ```
 
 ## Usage:
-```
+```python
 #Import libraries (Don't change)
 from GoogleImageScrapper import GoogleImageScraper
 import os
+from patch import webdriver_executable
 
 #Define file path (Don't change)
-webdriver_path = os.path.normpath(os.getcwd()+"\\webdriver\\chromedriver.exe")
-image_path = os.path.normpath(os.getcwd()+"\\photos")
+webdriver_path = os.path.normpath(os.path.join(os.getcwd(), 'webdriver', webdriver_executable()))
+image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
 
 #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
 search_keys= ["cat","t-shirt"]
