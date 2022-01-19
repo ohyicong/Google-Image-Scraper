@@ -6,5 +6,4 @@ webdriver/chromedriver_win32.zip
 __pycache__/GoogleImageScrapper.cpython-38.pyc
 __pycache__/*
 webdriver/*.zip
-webdriver/chromedriver
 photos
