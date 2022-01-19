@@ -6,8 +6,8 @@ Created on Sun Jul 12 11:02:06 2020
 
 """
 #Import libraries
-from GoogleImageScrapper import GoogleImageScraper
 import os
+from GoogleImageScrapper import GoogleImageScraper
 from patch import webdriver_executable
 
 if __name__ == "__main__":
