@@ -80,7 +80,7 @@ class GoogleImageScraper():
         self.driver.get(self.url)
         time.sleep(5)
         indx = 1
-        while self.number_of_images >= count:
+        while self.number_of_images > count:
             try:
                 #find and click image
                 imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
