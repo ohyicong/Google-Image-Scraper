@@ -19,7 +19,7 @@ if __name__ == "__main__":
     search_keys= ['apple','t-shirt']
 
     #Parameters
-    number_of_images = 2
+    number_of_images = 20
     headless = False
     min_resolution=(0,0)
     max_resolution=(9999,9999)

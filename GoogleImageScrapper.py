@@ -78,7 +78,7 @@ class GoogleImageScraper():
         count = 0
         missed_count = 0
         self.driver.get(self.url)
-        time.sleep(5)
+        time.sleep(3)
         indx = 1
         while self.number_of_images > count:
             try:
@@ -100,7 +100,8 @@ class GoogleImageScraper():
                 images = [self.driver.find_elements_by_class_name(class_name) for class_name in class_names if len(self.driver.find_elements_by_class_name(class_name)) != 0 ][0]
                 for image in images:
                     #only download images that starts with http
-                    if(image.get_attribute("src")[:4].lower() in ["http"]):
+                    src_link = image.get_attribute("src")
+                    if(("http" in  src_link) and (not "encrypted" in src_link)):
                         print("[INFO] %d. %s"%(count,image.get_attribute("src")))
                         image_urls.append(image.get_attribute("src"))
                         count +=1
@@ -115,7 +116,7 @@ class GoogleImageScraper():
                 element = self.driver.find_element_by_class_name("mye4qd")
                 element.click()
                 print("[INFO] Loading more photos")
-                time.sleep(5)
+                time.sleep(3)
             except Exception:  
                 time.sleep(1)
             indx += 1
