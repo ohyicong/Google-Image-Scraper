@@ -102,8 +102,8 @@ class GoogleImageScraper():
                     #only download images that starts with http
                     src_link = image.get_attribute("src")
                     if(("http" in  src_link) and (not "encrypted" in src_link)):
-                        print("[INFO] %d. %s"%(count,image.get_attribute("src")))
-                        image_urls.append(image.get_attribute("src"))
+                        print("[INFO] %d. %s"%(count,src_link))
+                        image_urls.append(src_link)
                         count +=1
                         break
             except Exception:
