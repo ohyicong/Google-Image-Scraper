@@ -145,7 +145,8 @@ class GoogleImageScraper():
                 if image.status_code == 200:
                     with Image.open(io.BytesIO(image.content)) as image_from_web:
                         try:
-                            filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+                            #filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+                            filename = "%s%s.%s"%(search_string,str(indx),'png')
                             image_path = os.path.join(self.image_path, filename)
                             print("[INFO] %d .Image saved at: %s"%(indx,image_path))
                             image_from_web.save(image_path)
