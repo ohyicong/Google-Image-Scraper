@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jul 18 13:01:02 2020
+Created on Tues May 31 11:48:02 2022
 
-@author: OHyic
+@author: JJLimmm
 """
 #import selenium drivers
 from selenium import webdriver
@@ -23,7 +23,7 @@ from PIL import Image
 #custom patch libraries
 import patch 
 
-class GoogleImageScraper():
+class GettyImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
@@ -60,7 +60,7 @@ class GoogleImageScraper():
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
-        self.url = "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key)
+        self.url = "https://www.gettyimages.com/search/2/image?family=creative&phrase=%s"%(search_key)
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
@@ -83,8 +83,10 @@ class GoogleImageScraper():
         while self.number_of_images > count:
             try:
                 #find and click image
-                imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
-                imgurl.click()
+                # imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
+                imgurl = self.driver.find_element_by_xpath("//*[@class='GalleryItems-module__searchContent___DbMmK']/div[%s]/article[1]/a[1]/figure[1]/picture[1]/img"%(str(indx)))
+                src_link = imgurl.get_attribute('src')
+                # imgurl.click()
                 missed_count = 0 
             except Exception:
                 #print("[-] Unable to click this photo.")
@@ -96,16 +98,10 @@ class GoogleImageScraper():
             try:
                 #select image from the popup
                 time.sleep(1)
-                class_names = ["n3VNCb"]
-                images = [self.driver.find_elements_by_class_name(class_name) for class_name in class_names if len(self.driver.find_elements_by_class_name(class_name)) != 0 ][0]
-                for image in images:
-                    #only download images that starts with http
-                    src_link = image.get_attribute("src")
-                    if(("http" in  src_link) and (not "encrypted" in src_link)):
-                        print("[INFO] %d. %s"%(count,src_link))
-                        image_urls.append(src_link)
-                        count +=1
-                        break
+                if(("http" in  src_link) and (not "encrypted" in src_link)):
+                    print("[INFO] %d. %s"%(count,src_link))
+                    image_urls.append(src_link)
+                    count +=1
             except Exception:
                 print("[INFO] Unable to get link")   
                 
@@ -123,7 +119,7 @@ class GoogleImageScraper():
 
         
         self.driver.quit()
-        print("[INFO] Google search ended")
+        print("[INFO] Getty search ended")
         return image_urls
 
     def save_images(self,image_urls):
@@ -131,9 +127,9 @@ class GoogleImageScraper():
         """
             This function takes in an array of image urls and save it into the prescribed image path/directory.
             Example:
-                google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
+                getty_image_scraper = GettyImageScraper("webdriver_path","image_path","search_key",number_of_photos)
                 image_urls=["https://example_1.jpg","https://example_2.jpg"]
-                google_image_scraper.save_images(image_urls)
+                getty_image_scraper.save_images(image_urls)
                 
         """
         print("[INFO] Saving Image... Please wait...")
