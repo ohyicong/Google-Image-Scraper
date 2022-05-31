@@ -107,12 +107,14 @@ class GettyImageScraper():
                 
             try:
                 #scroll page to load next image
-                if(count%3==0):
-                    self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
-                element = self.driver.find_element_by_class_name("mye4qd")
-                element.click()
-                print("[INFO] Loading more photos")
-                time.sleep(3)
+                if(count%70==0):
+                    # self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
+                    element = self.driver.find_element_by_class_name("PaginationRow-module__buttonText___XM2mA")
+                    element.click()
+                    indx = 0
+                    print("[INFO] Loading more photos")
+                    time.sleep(5)
+                    
             except Exception:  
                 time.sleep(1)
             indx += 1
