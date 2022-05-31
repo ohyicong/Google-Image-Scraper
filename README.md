@@ -15,7 +15,7 @@ A library to scrap google images
     ```
 3. Install Dependencies
     ```
-    pip install selenium, requests, pillow
+    pip install -r requirements.txt
     ```
 4. Run the code
     ```
