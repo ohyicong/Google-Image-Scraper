@@ -60,7 +60,7 @@ class GettyImageScraper():
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
-        self.url = "https://www.gettyimages.com/search/2/image?family=creative&phrase=%s"%(search_key)
+        self.url = "https://www.gettyimages.com/search/2/image?family=creative&phrase=%s&page1"%(search_key)
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
@@ -80,37 +80,39 @@ class GettyImageScraper():
         self.driver.get(self.url)
         time.sleep(3)
         indx = 1
+        pagenum = 1
         while self.number_of_images > count:
             try:
-                #find and click image
-                # imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
+                #find and load image src
                 imgurl = self.driver.find_element_by_xpath("//*[@class='GalleryItems-module__searchContent___DbMmK']/div[%s]/article[1]/a[1]/figure[1]/picture[1]/img"%(str(indx)))
                 src_link = imgurl.get_attribute('src')
-                # imgurl.click()
                 missed_count = 0 
             except Exception:
-                #print("[-] Unable to click this photo.")
+                #print("[-] Unable to get photo src.")
                 missed_count = missed_count + 1
                 if (missed_count>10):
                     print("[INFO] No more photos.")
                     break
                  
             try:
-                #select image from the popup
+                #Go to image src
                 time.sleep(1)
                 if(("http" in  src_link) and (not "encrypted" in src_link)):
                     print("[INFO] %d. %s"%(count,src_link))
                     image_urls.append(src_link)
                     count +=1
             except Exception:
-                print("[INFO] Unable to get link")   
+                print("[INFO] Unable to get to src link")   
                 
             try:
-                #scroll page to load next image
-                if(count%70==0):
-                    # self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
-                    element = self.driver.find_element_by_class_name("PaginationRow-module__buttonText___XM2mA")
-                    element.click()
+                #Load next page once reaches 60 images (images per page on Getty)
+                if(count%60==0):
+                    # element = self.driver.find_element_by_class_name("PaginationRow-module__buttonText___XM2mA")
+                    # element.click()
+                    pagenum += 1
+                    old_url = self.url
+                    new_url = old_url.replace("page=" + str(pagenum - 1), "page=" + str(pagenum))
+                    self.driver.get(new_url)
                     indx = 0
                     print("[INFO] Loading more photos")
                     time.sleep(5)
