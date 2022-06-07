@@ -39,7 +39,7 @@ webdriver_path = os.path.normpath(os.path.join(os.getcwd(), 'webdriver', webdriv
 image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
 
 #Website used for scraping: 
-website_list = ['google', 'getty']
+website_list = ['google', 'getty', 'shutterstock', 'bing']
 search_site = website_list[1] #change index number here to select the website you are using
 
 #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
@@ -59,9 +59,9 @@ for search_key in search_keys:
     if search_site == 'getty':
         image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
     if search_site == 'shutterstock':
-        image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
+        image_scrapper = ShutterstockImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
     if search_site == 'bing':
-        image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
+        image_scrapper = BingImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
     image_urls = image_scrapper.find_image_urls()
     image_scrapper.save_images(image_urls)
 
