@@ -70,6 +70,7 @@ del image_scrapper
 
 ```
 
+<<<<<<< HEAD
 ## Development Roadmap:  
 [x] Add Scraping from Getty Images  
 [ ] Add scraping for shutterstock and bing (**_In-Progress_**)  
@@ -79,3 +80,6 @@ del image_scrapper
 
 ## Youtube Video:
 [![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
+=======
+Do remember to like, share and subscribe!
+>>>>>>> 501a197a86d0895bf77c58582773c33560038720
