@@ -23,7 +23,7 @@ from PIL import Image
 #custom patch libraries
 import patch 
 
-class GoogleImageScraper():
+class BingImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
@@ -36,13 +36,13 @@ class GoogleImageScraper():
         #check if chromedriver is updated
         while(True):
             try:
-                #try going to www.google.com
+                #try going to www.Bing.com
                 options = Options()
                 if(headless):
                     options.add_argument('--headless')
                 driver = webdriver.Chrome(webdriver_path, chrome_options=options)
                 driver.set_window_size(1400,1050)
-                driver.get("https://www.google.com")
+                driver.get("https://www.Bing.com")
                 break
             except:
                 #patch chromedriver if not available or outdated
@@ -60,8 +60,8 @@ class GoogleImageScraper():
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
-        # self.url = "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key) # Searching by keyword
-        self.url = "https://www.google.com/search?hl=en-SG&tbs=simg:CAESmAIJPN_15ByxqerwajAILELCMpwgaOwo5CAQSFKE2gT-OMJAOtSatN9ERsyzFC78PGht_1ikShZ6PCQ6a88MgE38APW9L2iAFerzeGxTggBTAEDAsQjq7-CBoKCggIARIE0o3PGgwLEJ3twQkaqwEKGQoHbGVpc3VyZdqliPYDCgoIL20vMDRnM3IKJgoSbmF2aWdhdGlvbiBjaGFubmVs2qWI9gMMCgovbS8wY245cDAyCicKE21hcmluZSBhcmNoaXRlY3R1cmXapYj2AwwKCi9tLzAyODBmM18KJAoQbmF2aWdhdGlvbiBjYW5hbNqliPYDDAoKL20vMGNuOXAxMQoXCgViYXJnZdqliPYDCgoIL20vMDFidG4M&sxsrf=ALiCzsZchEwD4sOzSvSxdXZo0NEm2trZ-Q:1654564208185&q=leisure&tbm=isch&source=iu&ictx=1&vet=1&fir=s20go46GGTIFeM%252CTCrJrEtQ54UoUM%252C_%253B6JHjiKQtMbyfiM%252CHiidN4C9K1Mp8M%252C_%253BgflYOi8-hHJzjM%252CCKH9LIY0Y5sRIM%252C_%253BbK8QKedfVsrMEM%252CCnUtPjCOm4eNQM%252C_%253Bu369Z9Aij-NY2M%252CnqmTiYuhZSXipM%252C_%253B8oLRnitJ8fv4rM%252C9-ryFNCHoNl0oM%252C_%253B9CJC_OmFN9ppgM%252Ci5I5xK1uAyAdGM%252C_%253BG9JT2nqOa-tYbM%252CHUtPclSCY8RkfM%252C_%253BRvAHvVfGtCKjqM%252Cc-tpwjk-JEcGUM%252C_%253BD_G99e8hbwozLM%252CC5k6BUjPrvLWoM%252C_%253BjgA2TcZAR_g49M%252C02oZ3tYjywzWmM%252C_%253Bz5g9t5Nz07Kz7M%252CNhJRGORWGsaYmM%252C_%253BovTS6MZw9ftClM%252CtuHhR8NNv5cqfM%252C_%253BKdT9Ld7GemZxWM%252C5HvrmRxgS_hZeM%252C_%253Bty2MBVYOUAk8LM%252Croql3TtxpmSXQM%252C_%253B1oYrvVazcCvaoM%252CTxfFAssWRs4GzM%252C_%253BBAsAbCFW1QHxMM%252CwZJ9oE3NvWtNlM%252C_%253Bbl3YNfZClRnUMM%252CxC151u5NFpJEJM%252C_%253BqpJhApW8NOdryM%252CFyufiWK0p6hMvM%252C_%253BsTy2uMghOq30CM%252CHhHPj5e1CGhPQM%252C_&usg=AI4_-kQWxQ668wqxnZ4YGZtqHHmc7J6sdA&sa=X&ved=2ahUKEwi994v_k5r4AhVF7XMBHWf1A0kQ9QF6BAgKEAE&biw=1536&bih=713&dpr=2.5#imgrc=s20go46GGTIFeM" # Searching by url directly (searching by image on google and copy url of results page)
+        # self.url = "https://www.Bing.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key)
+        self.url = "https://www.bing.com/images/search?view=detailV2&insightstoken=bcid_S8T7-Bc3-0IE7g*ccid_xPv4Fzf7&form=SBIVSP&iss=SBIUPLOADGET&sbisrc=ImgDropper&idpbck=1&sbifsz=4000+x+3000+%c2%b7+35.99+kB+%c2%b7+png&sbifnm=MicrosoftTeams-image.png&thw=4000&thh=3000&ptime=998&dlen=49132&expw=692&exph=519&selectedindex=0&id=-1431471340&ccid=xPv4Fzf7&vt=2&sim=1"
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
@@ -70,8 +70,8 @@ class GoogleImageScraper():
         """
             This function search and return a list of image urls based on the search key.
             Example:
-                google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
-                image_urls = google_image_scraper.find_image_urls()
+                Bing_image_scraper = BingImageScraper("webdriver_path","image_path","search_key",number_of_photos)
+                image_urls = Bing_image_scraper.find_image_urls()
                 
         """
         print("[INFO] Scraping for image link... Please wait.")
@@ -84,47 +84,41 @@ class GoogleImageScraper():
         while self.number_of_images > count:
             try:
                 #find and click image
-                imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
-                imgurl.click()
+                print("[INFO] Getting img src link")
+                imgurl = self.driver.find_element_by_xpath('//*[@class="tab-content vsi"]/ul[1]/li[1]/div[1]/div[1]/div[1]/div[1]/div[1]/ul[1]/li[%s]/div[1]/div[1]/div[1]/div[1]/a[1]/img'%(str(indx)))
+                src_link = imgurl.get_attribute('src')
                 missed_count = 0 
             except Exception:
-                #print("[-] Unable to click this photo.")
+                print("[-] Unable to get src_link for this photo.")
                 missed_count = missed_count + 1
                 if (missed_count>10):
                     print("[INFO] No more photos.")
                     break
                  
             try:
-                #select image from the popup
                 time.sleep(1)
-                class_names = ["n3VNCb"]
-                images = [self.driver.find_elements_by_class_name(class_name) for class_name in class_names if len(self.driver.find_elements_by_class_name(class_name)) != 0 ][0]
-                for image in images:
-                    #only download images that starts with http
-                    src_link = image.get_attribute("src")
-                    if(("http" in  src_link) and (not "encrypted" in src_link)):
-                        print("[INFO] %d. %s"%(count,src_link))
-                        image_urls.append(src_link)
-                        count +=1
-                        break
+                if(("http" in  src_link) and (not "encrypted" in src_link)):
+                    print("[INFO] %d. %s"%(count,src_link))
+                    image_urls.append(src_link)
+                    count +=1
             except Exception:
-                print("[INFO] Unable to get link")   
+                print("[INFO] Unable to go into src link")   
                 
             try:
+                #BUG: Does not really scroll down the page for more images
+                #TODO: fix bug to scroll and load more images for scraping
                 #scroll page to load next image
-                if(count%3==0):
+                if(count%4==0):
                     self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
-                element = self.driver.find_element_by_class_name("mye4qd")
-                element.click()
                 print("[INFO] Loading more photos")
-                time.sleep(3)
+                time.sleep(5)
             except Exception:  
                 time.sleep(1)
             indx += 1
 
         
         self.driver.quit()
-        print("[INFO] Google search ended")
+        print("[INFO] Bing search ended")
         return image_urls
 
     def save_images(self,image_urls):
@@ -132,9 +126,9 @@ class GoogleImageScraper():
         """
             This function takes in an array of image urls and save it into the prescribed image path/directory.
             Example:
-                google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
+                Bing_image_scraper = BingImageScraper("webdriver_path","image_path","search_key",number_of_photos)
                 image_urls=["https://example_1.jpg","https://example_2.jpg"]
-                google_image_scraper.save_images(image_urls)
+                Bing_image_scraper.save_images(image_urls)
                 
         """
         print("[INFO] Saving Image... Please wait...")
@@ -158,7 +152,7 @@ class GoogleImageScraper():
                         if image_resolution != None:
                             if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
                                 image_from_web.close()
-                                #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
+                                #print("BingImageScraper Notification: %s did not meet resolution requirements."%(image_url))
                                 os.remove(image_path)
 
                         image_from_web.close()

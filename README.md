@@ -56,7 +56,11 @@ max_resolution=(1920,1080)
 for search_key in search_keys:
     if search_site == 'google':
         image_scrapper = GoogleImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
-    else:
+    if search_site == 'getty':
+        image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
+    if search_site == 'shutterstock':
+        image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
+    if search_site == 'bing':
         image_scrapper = GettyImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
     image_urls = image_scrapper.find_image_urls()
     image_scrapper.save_images(image_urls)
@@ -65,7 +69,13 @@ for search_key in search_keys:
 del image_scrapper
 
 ```
+
+## Development Roadmap:  
+[x] Add Scraping from Getty Images  
+[ ] Add scraping for shutterstock and bing (**_In-Progress_**)  
+[ ] Streamline all website scrapers into one script (Code Refactoring)  
+[ ] Support for other website browsers (Firefox, Edge)  
+[ ] Add in support for multiple image formats (e.g: jpg, png, jpeg) and reformat non-conventional image formats (webp, etc...)  
+
 ## Youtube Video:
 [![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
-
-Do remember to like, share and subscribe!
