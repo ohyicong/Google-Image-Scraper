@@ -1,5 +1,7 @@
 # Google Image Scraper
 A library to scrap google images
+If you are looking for other image scrapers.
+JJLimmm has created an image scrapper for getty, shuttershock, and bing. Visit his repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
 ## Pre-requisites:
 1. Pip install Selenium Library
