@@ -19,10 +19,11 @@ if __name__ == "__main__":
     search_keys= ['apple','t-shirt']
 
     #Parameters
-    number_of_images = 2
-    headless = False
-    min_resolution=(0,0)
-    max_resolution=(9999,9999)
+    number_of_images = 2               # Desired number of images
+    headless = True                    # True = No Chrome GUI
+    min_resolution = (0, 0)            # Minimum desired image resolution
+    max_resolution = (9999, 9999)      # Maximum desired image resolution
+    max_missed = 10                    # Max number of failed images before exit
 
     #Main program
     for search_key in search_keys:

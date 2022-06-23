@@ -24,7 +24,7 @@ from PIL import Image
 import patch 
 
 class GoogleImageScraper():
-    def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
+    def __init__(self,webdriver_path,image_path, search_key="cat", number_of_images=1, headless=False, min_resolution=(0,0), max_resolution=(1920,1080), max_missed=10):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
         if (type(number_of_images)!=int):
@@ -64,6 +64,7 @@ class GoogleImageScraper():
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
+        self.max_missed = max_missed
         
     def find_image_urls(self):
         """
@@ -89,8 +90,8 @@ class GoogleImageScraper():
             except Exception:
                 #print("[-] Unable to click this photo.")
                 missed_count = missed_count + 1
-                if (missed_count>10):
-                    print("[INFO] No more photos.")
+                if (missed_count>self.max_missed):
+                    print("[INFO] ")
                     break
                  
             try:
@@ -115,7 +116,7 @@ class GoogleImageScraper():
                     self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
                 element = self.driver.find_element_by_class_name("mye4qd")
                 element.click()
-                print("[INFO] Loading more photos")
+                print("[INFO] Loading next page")
                 time.sleep(3)
             except Exception:  
                 time.sleep(1)
@@ -129,7 +130,7 @@ class GoogleImageScraper():
     def save_images(self,image_urls):
         #save images into file directory
         """
-            This function takes in an array of image urls and save it into the prescribed image path/directory.
+            This function takes in an array of image urls and save it into the given image path/directory.
             Example:
                 google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
                 image_urls=["https://example_1.jpg","https://example_2.jpg"]
@@ -161,6 +162,6 @@ class GoogleImageScraper():
 
                         image_from_web.close()
             except Exception as e:
-                print("[ERROR] Failed to be downloaded",e)
+                print("[ERROR] Download failed: ",e)
                 pass
-        print("[INFO] Download Completed. Please note that some photos are not downloaded as it is not in the right format (e.g. jpg, jpeg, png)")
+        print("[INFO] Downloads completed. Please note that some photos were not downloaded as they were not in the correct format (e.g. jpg, jpeg, png)")
