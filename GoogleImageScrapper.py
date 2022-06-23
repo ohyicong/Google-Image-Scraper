@@ -24,7 +24,7 @@ from PIL import Image
 import patch 
 
 class GoogleImageScraper():
-    def __init__(self,webdriver_path,image_path, search_key="cat", number_of_images=1, headless=False, min_resolution=(0,0), max_resolution=(1920,1080), max_missed=10):
+    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
         if (type(number_of_images)!=int):
@@ -103,7 +103,8 @@ class GoogleImageScraper():
                     #only download images that starts with http
                     src_link = image.get_attribute("src")
                     if(("http" in  src_link) and (not "encrypted" in src_link)):
-                        print("[INFO] %d. %s"%(count,src_link))
+                        print(
+                            f"[INFO] {self.search_key} \t #{count} \t {src_link}")
                         image_urls.append(src_link)
                         count +=1
                         break
@@ -148,7 +149,8 @@ class GoogleImageScraper():
                         try:
                             filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
                             image_path = os.path.join(self.image_path, filename)
-                            print("[INFO] %d .Image saved at: %s"%(indx,image_path))
+                            print(
+                                f"[INFO] {self.search_key} \t {indx} \t Image saved at: {image_path}")
                             image_from_web.save(image_path)
                         except OSError:
                             rgb_im = image_from_web.convert('RGB')
