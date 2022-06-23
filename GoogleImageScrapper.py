@@ -74,7 +74,7 @@ class GoogleImageScraper():
                 image_urls = google_image_scraper.find_image_urls()
                 
         """
-        print("[INFO] Scraping for image link... Please wait.")
+        print("[INFO] Gathering image links")
         image_urls=[]
         count = 0
         missed_count = 0
@@ -91,7 +91,7 @@ class GoogleImageScraper():
                 #print("[-] Unable to click this photo.")
                 missed_count = missed_count + 1
                 if (missed_count>self.max_missed):
-                    print("[INFO] ")
+                    print("[INFO] Maximum missed photos reached, exiting...")
                     break
                  
             try:
@@ -137,7 +137,7 @@ class GoogleImageScraper():
                 google_image_scraper.save_images(image_urls)
                 
         """
-        print("[INFO] Saving Image... Please wait...")
+        print("[INFO] Saving image, please wait...")
         for indx,image_url in enumerate(image_urls):
             try:
                 print("[INFO] Image url:%s"%(image_url))
