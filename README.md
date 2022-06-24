@@ -1,18 +1,16 @@
 # Google Image Scraper
-A library to scrap google images.<br>
-If you are looking for other image scrapers.<br>
-JJLimmm has created an image scrapper for getty, shuttershock, and bing. <br>
-Visit his repo here: https://github.com/JJLimmm/Website-Image-Scraper
+A library created to scrape Google Images.<br>
+If you are looking for other image scrapers, JJLimmm has created image scrapers for Gettyimages, Shutterstock, and Bing. <br>
+Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
 ## Pre-requisites:
-1. Pip install Selenium Library
-2. Pip install PIL
-3. Download Google Chrome 
-4. Download Google Webdriver based on your Chrome version
+1. Google Chrome
+1. Selenium (pip install Selenium)
+2. Pillow (pip install Pillow)
 
 ## Setup:
-1. Open cmd
-2. Clone the repository (or [download](https://github.com/ohyicong/Google-Image-Scraper/archive/refs/heads/master.zip))
+1. Open command prompt
+2. Clone this repository (or [download](https://github.com/ohyicong/Google-Image-Scraper/archive/refs/heads/master.zip))
     ```
     git clone https://github.com/ohyicong/Google-Image-Scraper
     ```
@@ -20,39 +18,35 @@ Visit his repo here: https://github.com/JJLimmm/Website-Image-Scraper
     ```
     pip install -r requirements.txt
     ```
-4. Run the code
+4. Edit your desired parameters in main.py
+    ```
+    search_keys         = Strings that will be searched for
+    number of images    = Desired number of images
+    headless            = Chrome GUI behaviour. If True, there will be no GUI
+    min_resolution      = Minimum desired image resolution
+    max_resolution      = Maximum desired image resolution
+    max_missed          = Maximum number of failed image grabs before program terminates. Increase this number to ensure large queries do not exit.
+    number_of_workers   = Number of sectioned jobs created. Restricted to one worker per search term and thread.
+    ```
+4. Run the program
     ```
     python main.py
     ```
 
 ## Usage:
-```python
-#Import libraries (Don't change)
-from GoogleImageScrapper import GoogleImageScraper
-import os
-from patch import webdriver_executable
-
-#Define file path (Don't change)
-webdriver_path = os.path.normpath(os.path.join(os.getcwd(), 'webdriver', webdriver_executable()))
-image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
-
-#Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
-search_keys= ["cat","t-shirt"]
-
-#Parameters
-number_of_images = 10
-headless = True
-min_resolution=(0,0)
-max_resolution=(1920,1080)
-
-#Main program
-for search_key in search_keys:
-    image_scrapper = GoogleImageScraper(webdriver_path,image_path,search_key,number_of_images,headless,min_resolution,max_resolution)
-    image_urls = image_scrapper.find_image_urls()
-    image_scrapper.save_images(image_urls)
-
+This project was created to bypass Google Chrome's new restrictions on web scraping from Google Images. 
+To use it, define your desired parameters in main.py and run through the command line:
 ```
+python main.py
+```
+
 ## Youtube Video:
 [![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
 
-Do remember to like, share and subscribe!
+
+## IMPORTANT:
+Although it says so in the video, this program will not run through VSCode. It must be run in the command line.
+
+This program will install an updated webdriver automatically. There is no need to install your own.
+
+### Please like, subscribe, and share if you found my project helpful! 
