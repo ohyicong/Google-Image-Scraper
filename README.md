@@ -1,8 +1,7 @@
 # Google Image Scraper
-A library to scrap google images.<br>
-If you are looking for other image scrapers.<br>
-JJLimmm has created an image scraper for getty, shuttershock, and bing. <br>
-Visit his repo here: https://github.com/JJLimmm/Website-Image-Scraper
+A library created to scrape Google Images.<br>
+If you are looking for other image scrapers, JJLimmm has created image scrapers for Gettyimages, Shutterstock, and Bing. <br>
+Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
 ## Pre-requisites:
 1. Google Chrome
@@ -10,7 +9,7 @@ Visit his repo here: https://github.com/JJLimmm/Website-Image-Scraper
 2. Pillow (pip install Pillow)
 
 ## Setup:
-1. Open cmd
+1. Open command prompt
 2. Clone this repository (or [download](https://github.com/ohyicong/Google-Image-Scraper/archive/refs/heads/master.zip))
     ```
     git clone https://github.com/ohyicong/Google-Image-Scraper
