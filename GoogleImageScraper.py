@@ -10,18 +10,19 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException       
+from selenium.common.exceptions import NoSuchElementException
 
 #import helper libraries
 import time
 import urllib.request
+from urllib.parse import urlparse
 import os
 import requests
 import io
 from PIL import Image
 
 #custom patch libraries
-import patch 
+import patch
 
 class GoogleImageScraper():
     def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
@@ -52,9 +53,9 @@ class GoogleImageScraper():
                     is_patched = patch.download_lastest_chromedriver()
                 else:
                     is_patched = patch.download_lastest_chromedriver(driver.capabilities['version'])
-                if (not is_patched): 
+                if (not is_patched):
                     exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
-                    
+
         self.driver = driver
         self.search_key = search_key
         self.number_of_images = number_of_images
@@ -65,14 +66,14 @@ class GoogleImageScraper():
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
         self.max_missed = max_missed
-        
+
     def find_image_urls(self):
         """
             This function search and return a list of image urls based on the search key.
             Example:
                 google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
                 image_urls = google_image_scraper.find_image_urls()
-                
+
         """
         print("[INFO] Gathering image links")
         image_urls=[]
@@ -86,14 +87,14 @@ class GoogleImageScraper():
                 #find and click image
                 imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
                 imgurl.click()
-                missed_count = 0 
+                missed_count = 0
             except Exception:
                 #print("[-] Unable to click this photo.")
                 missed_count = missed_count + 1
                 if (missed_count>self.max_missed):
                     print("[INFO] Maximum missed photos reached, exiting...")
                     break
-                 
+
             try:
                 #select image from the popup
                 time.sleep(1)
@@ -109,8 +110,8 @@ class GoogleImageScraper():
                         count +=1
                         break
             except Exception:
-                print("[INFO] Unable to get link")   
-                
+                print("[INFO] Unable to get link")
+
             try:
                 #scroll page to load next image
                 if(count%3==0):
@@ -119,16 +120,17 @@ class GoogleImageScraper():
                 element.click()
                 print("[INFO] Loading next page")
                 time.sleep(3)
-            except Exception:  
+            except Exception:
                 time.sleep(1)
             indx += 1
 
-        
+
         self.driver.quit()
         print("[INFO] Google search ended")
         return image_urls
 
-    def save_images(self,image_urls):
+    def save_images(self,image_urls, keep_filenames):
+        print(keep_filenames)
         #save images into file directory
         """
             This function takes in an array of image urls and save it into the given image path/directory.
@@ -136,7 +138,7 @@ class GoogleImageScraper():
                 google_image_scraper = GoogleImageScraper("webdriver_path","image_path","search_key",number_of_photos)
                 image_urls=["https://example_1.jpg","https://example_2.jpg"]
                 google_image_scraper.save_images(image_urls)
-                
+
         """
         print("[INFO] Saving image, please wait...")
         for indx,image_url in enumerate(image_urls):
@@ -147,8 +149,18 @@ class GoogleImageScraper():
                 if image.status_code == 200:
                     with Image.open(io.BytesIO(image.content)) as image_from_web:
                         try:
-                            filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+                            if (keep_filenames):
+                                #extact filename without extension from URL
+                                o = urlparse(image_url)
+                                image_url = o.scheme + "://" + o.netloc + o.path
+                                name = os.path.splitext(os.path.basename(image_url))[0]
+                                #join filename and extension
+                                filename = "%s.%s"%(name,image_from_web.format.lower())
+                            else:
+                                filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+
                             image_path = os.path.join(self.image_path, filename)
+
                             print(
                                 f"[INFO] {self.search_key} \t {indx} \t Image saved at: {image_path}")
                             image_from_web.save(image_path)
