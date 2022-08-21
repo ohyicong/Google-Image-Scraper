@@ -89,7 +89,6 @@ class GoogleImageScraper():
                 imgurl.click()
                 missed_count = 0
             except Exception:
-                #print("[-] Unable to click this photo.")
                 missed_count = missed_count + 1
                 if (missed_count>self.max_missed):
                     print("[INFO] Maximum missed photos reached, exiting...")
@@ -160,7 +159,6 @@ class GoogleImageScraper():
                                 filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
 
                             image_path = os.path.join(self.image_path, filename)
-
                             print(
                                 f"[INFO] {self.search_key} \t {indx} \t Image saved at: {image_path}")
                             image_from_web.save(image_path)
@@ -171,7 +169,6 @@ class GoogleImageScraper():
                         if image_resolution != None:
                             if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
                                 image_from_web.close()
-                                #print("GoogleImageScraper Notification: %s did not meet resolution requirements."%(image_url))
                                 os.remove(image_path)
 
                         image_from_web.close()
