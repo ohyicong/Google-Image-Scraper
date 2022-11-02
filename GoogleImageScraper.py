@@ -44,6 +44,8 @@ class GoogleImageScraper():
                 driver = webdriver.Chrome(webdriver_path, chrome_options=options)
                 driver.set_window_size(1400,1050)
                 driver.get("https://www.google.com")
+                if driver.find_elements_by_id("L2AGLb"):
+                    driver.find_element_by_id("L2AGLb").click()
                 break
             except:
                 #patch chromedriver if not available or outdated
