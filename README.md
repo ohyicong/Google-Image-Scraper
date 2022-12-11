@@ -5,8 +5,8 @@ Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
 ## Pre-requisites:
 1. Google Chrome
-1. Selenium (pip install Selenium)
-2. Pillow (pip install Pillow)
+2. Python3 packages (Pillow, Selenium, Requests)
+3. Windows OS (Other OS is not tested)
 
 ## Setup:
 1. Open command prompt
