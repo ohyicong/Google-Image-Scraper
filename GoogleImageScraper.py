@@ -26,9 +26,9 @@ import re
 import patch
 
 class GoogleImageScraper():
-    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
+    def __init__(self, webdriver_path, image_path, search_key="cat", path_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
         #check parameter types
-        image_path = os.path.join(image_path, search_key)
+        image_path = os.path.join(image_path, path_key)
         if (type(number_of_images)!=int):
             print("[Error] Number of images must be integer value.")
             return
@@ -61,6 +61,7 @@ class GoogleImageScraper():
 
         self.driver = driver
         self.search_key = search_key
+        self.path_key = path_key
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
