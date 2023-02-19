@@ -20,6 +20,7 @@ import os
 import requests
 import io
 from PIL import Image
+import re
 
 #custom patch libraries
 import patch
@@ -34,8 +35,14 @@ class GoogleImageScraper():
         if not os.path.exists(image_path):
             print("[INFO] Image path not found. Creating a new folder.")
             os.makedirs(image_path)
-        #check if chromedriver is updated
-        while(True):
+            
+        #check if chromedriver is installed
+        if (not os.path.isfile(webdriver_path)):
+            is_patched = patch.download_lastest_chromedriver()
+            if (not is_patched):
+                exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
+
+        for i in range(1):
             try:
                 #try going to www.google.com
                 options = Options()
@@ -44,17 +51,11 @@ class GoogleImageScraper():
                 driver = webdriver.Chrome(webdriver_path, chrome_options=options)
                 driver.set_window_size(1400,1050)
                 driver.get("https://www.google.com")
-                if driver.find_elements_by_id("L2AGLb"):
-                    driver.find_element_by_id("L2AGLb").click()
-                break
-            except:
-                #patch chromedriver if not available or outdated
-                try:
-                    driver
-                except NameError:
-                    is_patched = patch.download_lastest_chromedriver()
-                else:
-                    is_patched = patch.download_lastest_chromedriver(driver.capabilities['version'])
+            except Exception as e:
+                #update chromedriver
+                pattern = '(\d+\.\d+\.\d+\.\d+)'
+                version = list(set(re.findall(pattern, str(e))))[0]
+                is_patched = patch.download_lastest_chromedriver(version)
                 if (not is_patched):
                     exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
 
@@ -87,7 +88,7 @@ class GoogleImageScraper():
         while self.number_of_images > count:
             try:
                 #find and click image
-                imgurl = self.driver.find_element_by_xpath('//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
+                imgurl = self.driver.find_element(By.XPATH,'//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'%(str(indx)))
                 imgurl.click()
                 missed_count = 0
             except Exception:
@@ -100,7 +101,7 @@ class GoogleImageScraper():
                 #select image from the popup
                 time.sleep(1)
                 class_names = ["n3VNCb"]
-                images = [self.driver.find_elements_by_class_name(class_name) for class_name in class_names if len(self.driver.find_elements_by_class_name(class_name)) != 0 ][0]
+                images = [self.driver.find_elements(By.CLASS_NAME, class_name) for class_name in class_names if len(self.driver.find_elements(By.CLASS_NAME, class_name)) != 0 ][0]
                 for image in images:
                     #only download images that starts with http
                     src_link = image.get_attribute("src")
@@ -117,7 +118,7 @@ class GoogleImageScraper():
                 #scroll page to load next image
                 if(count%3==0):
                     self.driver.execute_script("window.scrollTo(0, "+str(indx*60)+");")
-                element = self.driver.find_element_by_class_name("mye4qd")
+                element = self.driver.find_element(By.CLASS_NAME,"mye4qd")
                 element.click()
                 print("[INFO] Loading next page")
                 time.sleep(3)

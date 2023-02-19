@@ -58,18 +58,16 @@ def download_lastest_chromedriver(current_chrome_version=""):
         all_match = re.findall(pattern, content)
         
         if all_match:
-            # Version of latest driver.
-            if(current_chrome_version!=""):
-                print("[INFO] updating chromedriver")
+            # Find chromedriver 
+            if (current_chrome_version!=""):
                 all_match = list(set(re.findall(pattern, content)))
                 current_chrome_version = ".".join(current_chrome_version.split(".")[:-1])
                 version_match = [i for i in all_match if re.search("^%s"%current_chrome_version,i)]
-                version = version_match[0]
+                version = list(set(version_match))[0]
             else:
-                print("[INFO] installing new chromedriver")
                 version = all_match[1]
-            driver_url = base_driver_url + version + '/' + file_name
-    
+            
+            driver_url = base_driver_url + version + '/' + file_name    
             # Download the file.
             print('[INFO] downloading chromedriver ver: %s: %s'% (version, driver_url))
             app_path = os.path.dirname(os.path.realpath(__file__))
