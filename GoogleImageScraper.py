@@ -51,6 +51,10 @@ class GoogleImageScraper():
                 driver = webdriver.Chrome(webdriver_path, chrome_options=options)
                 driver.set_window_size(1400,1050)
                 driver.get("https://www.google.com")
+                try:
+                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "W0wltc"))).click()
+                except Exception as e:
+                    continue
             except Exception as e:
                 #update chromedriver
                 pattern = '(\d+\.\d+\.\d+\.\d+)'
