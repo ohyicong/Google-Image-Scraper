@@ -41,16 +41,18 @@ In the project repository, run:
 python googleimagescraper_cli.py --search-keys cat
 ```
 Optional arguments:
-    ```
-    --number_of_images: The number of images to download (default: 5)
-    --headless:   Whether to run in headless mode (default: False)
-    --min_resolution: The minimum desired image resolution (default: (0,0))
-    --max_resolution: The maximum desired image resolution (default: (10000,10000))
-    --max_missed: The maximum number of failed images before exiting (default: 10)       
-    --number_of_workers: The number of workers to use (default: 1)
-    --keep_filenames: Whether to keep original URL image filenames (default: False)
-    --searchname: The name of the subfolder in which images will be saved (default: "search")
-    ```
+
+```
+--number_of_images: The number of images to download (default: 5)
+--headless:   Whether to run in headless mode (default: False)
+--min_resolution: The minimum desired image resolution (default: (0,0))
+--max_resolution: The maximum desired image resolution (default: (10000,10000))
+--max_missed: The maximum number of failed images before exiting (default: 10)       
+--number_of_workers: The number of workers to use (default: 1)
+--keep_filenames: Whether to keep original URL image filenames (default: False)
+--searchname: The name of the subfolder in which images will be saved (default: "search")
+```
+
 Otherwise, define your desired parameters in main.py and run through the command line:
 ```
 python main.py
