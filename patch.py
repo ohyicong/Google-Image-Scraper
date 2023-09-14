@@ -14,6 +14,8 @@ import urllib.request
 import re
 import zipfile
 import stat
+import json
+import shutil
 from sys import platform
 
 def webdriver_executable():
@@ -28,64 +30,70 @@ def download_lastest_chromedriver(current_chrome_version=""):
     
         if platform == "linux" or platform == "linux2":
             # linux
-            filename += 'linux'
-            filename += '64' if is_64bits else '32'
+            filename += 'linux64'
+        
         elif platform == "darwin":
             # OS X
-            filename += 'mac64'
+            filename += 'mac-x64'
         elif platform == "win32":
             # Windows...
             filename += 'win32'
-    
-        filename += '.zip'
-    
+   
         return filename
     
     # Find the latest chromedriver, download, unzip, set permissions to executable.
     
     result = False
     try:
-        url = 'https://chromedriver.chromium.org/downloads'
-        base_driver_url = 'https://chromedriver.storage.googleapis.com/'
-        file_name = 'chromedriver_' + get_platform_filename()
-        pattern = 'https://.*?path=(\d+\.\d+\.\d+\.\d+)'
+        url = 'https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json'
     
         # Download latest chromedriver.
         stream = urllib.request.urlopen(url)
-        content = stream.read().decode('utf8')
-    
+        content = json.loads(stream.read().decode('utf-8'))
+
         # Parse the latest version.
-        all_match = re.findall(pattern, content)
         
-        if all_match:
-            # Find chromedriver 
-            if (current_chrome_version!=""):
-                all_match = list(set(re.findall(pattern, content)))
-                current_chrome_version = ".".join(current_chrome_version.split(".")[:-1])
-                version_match = [i for i in all_match if re.search("^%s"%current_chrome_version,i)]
-                version = list(set(version_match))[0]
-            else:
-                version = all_match[1]
+        if current_chrome_version != "":
+            match = re.search(r'\d+', current_chrome_version)
+            downloads = content["milestones"][match.group()]
+        
+        else:
+            for milestone in content["milestones"]:
+                downloads = content["milestones"][milestone]
+        
+        for download in downloads["downloads"]["chromedriver"]:
+            if (download["platform"] == get_platform_filename()):
+                driver_url = download["url"]
+        
+        # Download the file.
+        print('[INFO] downloading chromedriver ver: %s: %s'% (current_chrome_version, driver_url))
+        file_name = driver_url.split("/")[-1]
+        app_path = os.getcwd()
+        chromedriver_path = os.path.normpath(os.path.join(app_path, 'webdriver', webdriver_executable()))
+        file_path = os.path.normpath(os.path.join(app_path, 'webdriver', file_name))
+        urllib.request.urlretrieve(driver_url, file_path)
+
+        # Unzip the file into folde
+        
+        webdriver_path = os.path.normpath(os.path.join(app_path, 'webdriver'))
+        with zipfile.ZipFile(file_path, 'r') as zip_file:
+            for member in zip_file.namelist():
+                filename = os.path.basename(member)
+                if not filename:
+                    continue
+                source = zip_file.open(member)
+                target = open(os.path.join(webdriver_path, filename), "wb")
+                with source, target:
+                    shutil.copyfileobj(source, target)
             
-            driver_url = base_driver_url + version + '/' + file_name    
-            # Download the file.
-            print('[INFO] downloading chromedriver ver: %s: %s'% (version, driver_url))
-            app_path = os.path.dirname(os.path.realpath(__file__))
-            chromedriver_path = os.path.normpath(os.path.join(app_path, 'webdriver', webdriver_executable()))
-            file_path = os.path.normpath(os.path.join(app_path, 'webdriver', file_name))
-            urllib.request.urlretrieve(driver_url, file_path)
-    
-            # Unzip the file into folder
-            with zipfile.ZipFile(file_path, 'r') as zip_ref:
-                zip_ref.extractall(os.path.normpath(os.path.join(app_path, 'webdriver')))
-            st = os.stat(chromedriver_path)
-            os.chmod(chromedriver_path, st.st_mode | stat.S_IEXEC)
-            print('[INFO] lastest chromedriver downloaded')
-            # Cleanup.
-            os.remove(file_path)
-            result = True
-    except Exception:
+        st = os.stat(chromedriver_path)
+        os.chmod(chromedriver_path, st.st_mode | stat.S_IEXEC)
+        print('[INFO] lastest chromedriver downloaded')
+        # Cleanup.
+        os.remove(file_path)
+        result = True
+    except Exception as e:
+        print(e)
         print("[WARN] unable to download lastest chromedriver. the system will use the local version instead.")
     
     return result
-
