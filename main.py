@@ -8,8 +8,11 @@ Created on Sun Jul 12 11:02:06 2020
 #Import libraries
 import os
 import concurrent.futures
+from typing import List
+
 from GoogleImageScraper import GoogleImageScraper
 from patch import webdriver_executable
+from os.path import join
 
 
 def worker_thread(search_key):
@@ -23,10 +26,14 @@ def worker_thread(search_key):
         max_resolution, 
         max_missed)
     image_urls = image_scraper.find_image_urls()
-    image_scraper.save_images(image_urls, keep_filenames)
+    # image_scraper.save_images(image_urls, keep_filenames)
 
     #Release resources
     del image_scraper
+def load_search_terms() -> List[str]:
+    with open(join('input', 'products.txt')) as f:
+        terms = f.readlines()
+        return [term.replace("\n", '') for term in terms]
 
 if __name__ == "__main__":
     #Define file path
@@ -34,15 +41,15 @@ if __name__ == "__main__":
     image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
 
     #Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
-    search_keys = list(set(["cat","t-shirt"]))
+    search_keys = load_search_terms()
 
     #Parameters
-    number_of_images = 5                # Desired number of images
+    number_of_images = 3                # Desired number of images
     headless = True                     # True = No Chrome GUI
     min_resolution = (0, 0)             # Minimum desired image resolution
     max_resolution = (9999, 9999)       # Maximum desired image resolution
     max_missed = 10                     # Max number of failed images before exit
-    number_of_workers = 1               # Number of "workers" used
+    number_of_workers = 8              # Number of "workers" used
     keep_filenames = False              # Keep original URL image filenames
 
     #Run each search_key in a separate thread
