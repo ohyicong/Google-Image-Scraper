@@ -11,3 +11,4 @@ photos
 .ipynb_checkpoints/juypter_main-checkpoint.ipynb
 webdriver/chromedriver.exe
 webdriver/LICENSE.chromedriver
+.idea
