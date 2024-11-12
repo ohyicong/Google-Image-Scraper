@@ -27,6 +27,7 @@ import re
 
 #custom patch libraries
 import patch
+import logging
 
 class GoogleImageScraper:
     def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10, use_brave=False):
@@ -57,13 +58,16 @@ class GoogleImageScraper:
 
                 service = webdriver.ChromeService(executable_path=webdriver_path)
 
-                driver = webdriver.Chrome(service=service, options=options)
+                self.driver = webdriver.Chrome(service=service, options=options)
+
                 # driver = webdriver.Chrome(options=options, executable_path=webdriver_path)
-                driver.set_window_size(1400,1050)
-                driver.get("https://www.google.com")
+                self.driver.set_window_size(1400,1050)
+                self.driver.get("https://www.google.com")
                 try:
-                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "APjFqb"))).click()
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "APjFqb"))).click()
                 except Exception as e:
+                    logging.warning(e)
+                    logging.warning("timeout detected, ids and xpaths may have changed")
                     continue
             except Exception as e:
                 #update chromedriver
@@ -74,7 +78,6 @@ class GoogleImageScraper:
                 if not is_patched:
                     exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
 
-        self.driver = driver
         self.search_key = search_key
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
@@ -84,6 +87,7 @@ class GoogleImageScraper:
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
         self.max_missed = max_missed
+        self.use_brave = use_brave
 
     def find_image_urls(self):
         """
@@ -184,65 +188,6 @@ class GoogleImageScraper:
                     break
                 if count == self.number_of_images:
                     break
-            # if indx_2 > 0:
-            #     try:
-            #         imgurl = self.driver.find_element(By.XPATH, search_string%(indx_1,indx_2+1))
-            #         imgurl.click()
-            #         indx_2 = indx_2 + 1
-            #         missed_count = 0
-            #     except Exception as e:
-            #         try:
-            #             imgurl = self.driver.find_element(By.XPATH, search_string%(indx_1+1,1))
-            #             imgurl.click()
-            #             indx_2 = 1
-            #             indx_1 = indx_1 + 1
-            #         except:
-            #             indx_2 = indx_2 + 1
-            #             missed_count = missed_count + 1
-            # else:
-            #     try:
-            #         imgurl = self.driver.find_element(By.XPATH, search_string%(indx_1+1))
-            #         imgurl.click()
-            #         missed_count = 0
-            #         indx_1 = indx_1 + 1
-            #     except Exception as e:
-            #         try:
-            #             imgurl = self.driver.find_element(By.XPATH, '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'%(indx_1,indx_2+1))
-            #             imgurl.click()
-            #             missed_count = 0
-            #             indx_2 = indx_2 + 1
-            #             search_string = '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'
-            #         except Exception as e:
-            #             indx_1 = indx_1 + 1
-            #             missed_count = missed_count + 1
-            #
-            # try:
-            #     #select image from the popup
-            #     time.sleep(1)
-            #     class_names = ["n3VNCb","iPVvYb","r48jcc","pT0Scc"]
-            #     images = [self.driver.find_elements(By.CLASS_NAME, class_name) for class_name in class_names if len(self.driver.find_elements(By.CLASS_NAME, class_name)) != 0 ][0]
-            #     for image in images:
-            #         #only download images that starts with http
-            #         src_link = image.get_attribute("src")
-            #         if(("http" in src_link) and (not "encrypted" in src_link)):
-            #             print(
-            #                 f"[INFO] {self.search_key} \t #{count} \t {src_link}")
-            #             image_urls.append(src_link)
-            #             count +=1
-            #             break
-            # except Exception:
-            #     print("[INFO] Unable to get link")
-            #
-            # try:
-            #     #scroll page to load next image
-            #     if(count%3==0):
-            #         self.driver.execute_script("window.scrollTo(0, "+str(indx_1*60)+");")
-            #     element = self.driver.find_element(By.CLASS_NAME,"mye4qd")
-            #     element.click()
-            #     print("[INFO] Loading next page")
-            #     time.sleep(3)
-            # except Exception:
-            #     time.sleep(1)
 
 
 
