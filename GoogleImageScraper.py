@@ -241,7 +241,6 @@ class GoogleImageScraper:
                         try:
                             if keep_filenames:
                                 # extract filename without extension from URL
-                                # o = image_url
                                 o = urlparse(image_url)
                                 image_url = o.scheme + "://" + o.netloc + o.path
                                 name = os.path.splitext(os.path.basename(image_url))[0]
