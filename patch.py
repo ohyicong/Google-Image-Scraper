@@ -60,6 +60,7 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
 
         # Parse the latest version.
         driver_url = ""
+        downloads = None
         if current_chrome_version != "":
             match = re.search(r"\d+", current_chrome_version)
             downloads = content["milestones"][match.group()]
@@ -86,16 +87,15 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
         file_path = os.path.normpath(os.path.join(app_path, "webdriver", file_name))
         if not os.path.exists(download_path):
             os.makedirs(download_path)
-        # urllib.request.urlretrieve(driver_url, file_path)
+
         with requests.get(driver_url, stream=True) as response:
             response.raise_for_status()  # Check if the request was successful
             with open(file_path, "wb") as file:
                 for chunk in response.iter_content(
                     chunk_size=8192
-                ):  # Download in 8KB chunks
+                ):
                     file.write(chunk)
 
-        # Unzip the file into folde
 
         webdriver_path = os.path.normpath(os.path.join(app_path, "webdriver"))
         with zipfile.ZipFile(file_path, "r") as zip_file:
