@@ -8,6 +8,7 @@ import logging
 from sys import platform
 
 import requests
+
 #!/usr/bin/env python3
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -21,29 +22,30 @@ import json
 import shutil
 import platform as sys_platform
 
+
 def webdriver_executable():
     if platform == "linux" or platform == "linux2" or platform == "darwin":
-        return 'chromedriver'
-    return 'chromedriver.exe'
+        return "chromedriver"
+    return "chromedriver.exe"
 
 
 def download_latest_chromedriver(current_chrome_version="130") -> bool:
     def get_platform_filename() -> str:
-        is_64bits = sys.maxsize > 2 ** 32
+        is_64bits = sys.maxsize > 2**32
         platform = sys_platform.system()
 
         if platform == "linux" or platform == "linux2":
-            return 'linux64'
+            return "linux64"
 
         elif platform == "Darwin":
             machine = sys_platform.machine()
             if machine == "x86_64":
-                return 'mac-x64'
+                return "mac-x64"
             elif machine == "arm64":
-                return 'mac-arm64'
+                return "mac-arm64"
 
         elif platform == "win32":
-            return 'win32'
+            return "win32"
 
         return filename
 
@@ -51,7 +53,7 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
 
     result = False
     try:
-        url = 'https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json'
+        url = "https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json"
 
         data = requests.get(url)
         content = data.json()
@@ -59,7 +61,7 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
         # Parse the latest version.
         driver_url = ""
         if current_chrome_version != "":
-            match = re.search(r'\d+', current_chrome_version)
+            match = re.search(r"\d+", current_chrome_version)
             downloads = content["milestones"][match.group()]
 
         else:
@@ -71,14 +73,17 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
                 driver_url = download["url"]
 
         # Download the file.
-        logging.info('[INFO] downloading chromedriver ver: %s: %s' % (
-        current_chrome_version, driver_url))
+        logging.info(
+            "[INFO] downloading chromedriver ver: %s: %s"
+            % (current_chrome_version, driver_url)
+        )
         file_name = driver_url.split("/")[-1]
         app_path = os.getcwd()
-        download_path = os.path.join(app_path, 'webdriver')
+        download_path = os.path.join(app_path, "webdriver")
         chromedriver_path = os.path.normpath(
-            os.path.join(download_path, webdriver_executable()))
-        file_path = os.path.normpath(os.path.join(app_path, 'webdriver', file_name))
+            os.path.join(download_path, webdriver_executable())
+        )
+        file_path = os.path.normpath(os.path.join(app_path, "webdriver", file_name))
         if not os.path.exists(download_path):
             os.makedirs(download_path)
         # urllib.request.urlretrieve(driver_url, file_path)
@@ -86,13 +91,14 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
             response.raise_for_status()  # Check if the request was successful
             with open(file_path, "wb") as file:
                 for chunk in response.iter_content(
-                        chunk_size=8192):  # Download in 8KB chunks
+                    chunk_size=8192
+                ):  # Download in 8KB chunks
                     file.write(chunk)
 
         # Unzip the file into folde
 
-        webdriver_path = os.path.normpath(os.path.join(app_path, 'webdriver'))
-        with zipfile.ZipFile(file_path, 'r') as zip_file:
+        webdriver_path = os.path.normpath(os.path.join(app_path, "webdriver"))
+        with zipfile.ZipFile(file_path, "r") as zip_file:
             for member in zip_file.namelist():
                 filename = os.path.basename(member)
                 if not filename:
@@ -104,12 +110,13 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
 
         st = os.stat(chromedriver_path)
         os.chmod(chromedriver_path, st.st_mode | stat.S_IEXEC)
-        logging.info(msg='[INFO] latest chromedriver downloaded')
-        os.remove(file_path) # Cleanup
+        logging.info(msg="[INFO] latest chromedriver downloaded")
+        os.remove(file_path)  # Cleanup
         return True
     except Exception as e:
         logging.warning(e)
         logging.warning(
-            "[WARN] unable to download lastest chromedriver. the system will use the local version instead.")
+            "[WARN] unable to download lastest chromedriver. the system will use the local version instead."
+        )
 
     return False
