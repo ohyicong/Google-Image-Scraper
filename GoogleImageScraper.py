@@ -209,7 +209,7 @@ class GoogleImageScraper:
 
         """
         print("[INFO] Saving image, please wait...")
-        for indx,image_url in enumerate(image_urls):
+        for i,image_url in enumerate(image_urls):
             try:
                 print("[INFO] Image url:%s"%(image_url))
                 search_string = ''.join(e for e in self.search_key if e.isalnum())
@@ -226,17 +226,17 @@ class GoogleImageScraper:
                                 #join filename and extension
                                 filename = "%s.%s"%(name,image_from_web.format.lower())
                             else:
-                                filename = "%s%s.%s"%(search_string,str(indx),image_from_web.format.lower())
+                                filename = "%s%s.%s"%(search_string,str(i),image_from_web.format.lower())
 
                             image_path = os.path.join(self.image_path, filename)
                             print(
-                                f"[INFO] {self.search_key} \t {indx} \t Image saved at: {image_path}")
+                                f"[INFO] {self.search_key} \t {i} \t Image saved at: {image_path}")
                             image_from_web.save(image_path)
                         except OSError:
                             rgb_im = image_from_web.convert('RGB')
                             rgb_im.save(image_path)
                         image_resolution = image_from_web.size
-                        if image_resolution != None:
+                        if image_resolution is not  None:
                             if image_resolution[0]<self.min_resolution[0] or image_resolution[1]<self.min_resolution[1] or image_resolution[0]>self.max_resolution[0] or image_resolution[1]>self.max_resolution[1]:
                                 image_from_web.close()
                                 os.remove(image_path)

@@ -14,3 +14,4 @@ webdriver/LICENSE.chromedriver
 .idea
 webdriver/chromedriver
 webdriver/THIRD_PARTY_NOTICES.chromedriver
+.DS_Store
