@@ -97,13 +97,14 @@ class GoogleImageScraper:
                 image_urls = google_image_scraper.find_image_urls()
 
         """
-        SLEEP_TIME = 1
-        print("[INFO] Gathering image links")
+        logging.info("[INFO] Gathering image links")
         self.driver.get(self.url)
         image_urls=[]
         count = 0
         missed_count = 0
-        time.sleep(1)
+
+        _ = WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "//div[contains(@class,'F0uyec')]")))
         while self.number_of_images > count and missed_count < self.max_missed:
             img_results = self.driver.find_elements(
                 by=By.XPATH,
@@ -116,9 +117,10 @@ class GoogleImageScraper:
 
             for img_result in img_results:
                 try:
-                    time.sleep(SLEEP_TIME)
                     img_result.click()
-                    time.sleep(5)
+
+                    _ = WebDriverWait(self.driver, 5).until(
+                        EC.element_to_be_clickable((By.XPATH, "//img[contains(@class,'iPVvYb')]")))
 
                     actual_imgs = self.driver.find_elements(
                         by=By.XPATH,
