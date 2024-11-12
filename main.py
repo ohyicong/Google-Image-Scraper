@@ -24,7 +24,9 @@ def worker_thread(search_key):
         headless, 
         min_resolution, 
         max_resolution, 
-        max_missed)
+        max_missed,
+        use_brave=True
+    )
     image_urls = image_scraper.find_image_urls()
     # image_scraper.save_images(image_urls, keep_filenames)
 
@@ -45,11 +47,11 @@ if __name__ == "__main__":
 
     #Parameters
     number_of_images = 3                # Desired number of images
-    headless = True                     # True = No Chrome GUI
+    headless = False                     # True = No Chrome GUI
     min_resolution = (0, 0)             # Minimum desired image resolution
     max_resolution = (9999, 9999)       # Maximum desired image resolution
     max_missed = 10                     # Max number of failed images before exit
-    number_of_workers = 8              # Number of "workers" used
+    number_of_workers = 1              # Number of "workers" used
     keep_filenames = False              # Keep original URL image filenames
 
     #Run each search_key in a separate thread

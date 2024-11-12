@@ -5,6 +5,7 @@ Created on Sat Jul 18 13:01:02 2020
 @author: OHyic
 """
 import base64
+from sys import executable
 
 #import selenium drivers
 from selenium import webdriver
@@ -16,8 +17,8 @@ from selenium.common.exceptions import NoSuchElementException, ElementClickInter
 
 #import helper libraries
 import time
-import urllib.request
-from urllib.parse import urlparse
+# import urllib.request
+# from urllib.parse import urlparse
 import os
 import requests
 import io
@@ -27,8 +28,8 @@ import re
 #custom patch libraries
 import patch
 
-class GoogleImageScraper():
-    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
+class GoogleImageScraper:
+    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10, use_brave=False):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
         if type(number_of_images)!=int:
@@ -40,28 +41,36 @@ class GoogleImageScraper():
             
         #check if chromedriver is installed
         if not os.path.isfile(webdriver_path):
-            is_patched = patch.download_lastest_chromedriver()
+            is_patched = patch.download_latest_chromedriver()
             if not is_patched:
                 exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
 
         for i in range(1):
             try:
                 #try going to www.google.com
-                options = Options()
+                options = webdriver.ChromeOptions()
                 if headless:
                     options.add_argument('--headless')
-                driver = webdriver.Chrome(webdriver_path, chrome_options=options)
+                if use_brave:
+                    options.binary_location = "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+                # options.binary_location = chrome_bin # todo need to fix for chrome bin
+
+                service = webdriver.ChromeService(executable_path=webdriver_path)
+
+                driver = webdriver.Chrome(service=service, options=options)
+                # driver = webdriver.Chrome(options=options, executable_path=webdriver_path)
                 driver.set_window_size(1400,1050)
                 driver.get("https://www.google.com")
                 try:
-                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "W0wltc"))).click()
+                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "APjFqb"))).click()
                 except Exception as e:
                     continue
             except Exception as e:
                 #update chromedriver
+                print(e)
                 pattern = '(\d+\.\d+\.\d+\.\d+)'
                 version = list(set(re.findall(pattern, str(e))))[0]
-                is_patched = patch.download_lastest_chromedriver(version)
+                is_patched = patch.download_latest_chromedriver(version)
                 if not is_patched:
                     exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
 
@@ -263,7 +272,8 @@ class GoogleImageScraper():
                         try:
                             if (keep_filenames):
                                 #extact filename without extension from URL
-                                o = urlparse(image_url)
+                                o = image_url
+                                # o = urlparse(image_url)
                                 image_url = o.scheme + "://" + o.netloc + o.path
                                 name = os.path.splitext(os.path.basename(image_url))[0]
                                 #join filename and extension

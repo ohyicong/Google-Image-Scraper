@@ -12,3 +12,5 @@ photos
 webdriver/chromedriver.exe
 webdriver/LICENSE.chromedriver
 .idea
+webdriver/chromedriver
+webdriver/THIRD_PARTY_NOTICES.chromedriver
