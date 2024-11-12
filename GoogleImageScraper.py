@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jul 18 13:01:02 2020
+Created on Nov 11th 2024
 
-@author: OHyic
+@author: PrettyBoyHelios
 """
 import base64
-from sys import executable
 
 #import selenium drivers
 from selenium import webdriver
@@ -15,17 +14,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 
-#import helper libraries
-import time
-# import urllib.request
-# from urllib.parse import urlparse
 import os
 import requests
 import io
 from PIL import Image
 import re
 
-#custom patch libraries
 import patch
 import logging
 
