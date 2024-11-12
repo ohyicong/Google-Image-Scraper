@@ -4,6 +4,7 @@ Created on Sun May 23 14:44:43 2021
 
 @author: Yicong
 """
+import logging
 from sys import platform
 
 import requests
@@ -26,8 +27,8 @@ def webdriver_executable():
     return 'chromedriver.exe'
 
 
-def download_latest_chromedriver(current_chrome_version="130") -> str:
-    def get_platform_filename():
+def download_latest_chromedriver(current_chrome_version="130") -> bool:
+    def get_platform_filename() -> str:
         is_64bits = sys.maxsize > 2 ** 32
         platform = sys_platform.system()
 
@@ -52,10 +53,8 @@ def download_latest_chromedriver(current_chrome_version="130") -> str:
     try:
         url = 'https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json'
 
-        # Download latest chromedriver.
-        stream = requests.get(url)
-        # stream = urllib.request.urlopen(url)
-        content = stream.json()
+        data = requests.get(url)
+        content = data.json()
 
         # Parse the latest version.
         driver_url = ""
@@ -72,7 +71,7 @@ def download_latest_chromedriver(current_chrome_version="130") -> str:
                 driver_url = download["url"]
 
         # Download the file.
-        print('[INFO] downloading chromedriver ver: %s: %s' % (
+        logging.info('[INFO] downloading chromedriver ver: %s: %s' % (
         current_chrome_version, driver_url))
         file_name = driver_url.split("/")[-1]
         app_path = os.getcwd()
@@ -105,13 +104,12 @@ def download_latest_chromedriver(current_chrome_version="130") -> str:
 
         st = os.stat(chromedriver_path)
         os.chmod(chromedriver_path, st.st_mode | stat.S_IEXEC)
-        print('[INFO] latest chromedriver downloaded')
-        # Cleanup.
-        os.remove(file_path)
-        result = True
+        logging.info(msg='[INFO] latest chromedriver downloaded')
+        os.remove(file_path) # Cleanup
+        return True
     except Exception as e:
-        print(e)
-        print(
+        logging.warning(e)
+        logging.warning(
             "[WARN] unable to download lastest chromedriver. the system will use the local version instead.")
 
-    return result
+    return False
