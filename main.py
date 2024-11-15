@@ -5,7 +5,7 @@ Created on Sun Jul 12 11:02:06 2020
 @author: OHyic
 
 """
-#Import libraries
+# Import libraries
 import os
 import concurrent.futures
 from typing import List
@@ -29,28 +29,35 @@ def worker_thread_descriptions(search_key):
 
 def worker_thread(search_key):
     image_scraper = GoogleImageScraper(
-        webdriver_path, 
-        image_path, 
-        search_key, 
-        number_of_images, 
-        headless, 
-        min_resolution, 
-        max_resolution, 
-        max_missed)
+        webdriver_path,
+        image_path,
+        search_key,
+        number_of_images,
+        headless,
+        min_resolution,
+        max_resolution,
+        max_missed,
+        use_brave=True,
+    )
     image_urls = image_scraper.find_image_urls()
     # image_scraper.save_images(image_urls, keep_filenames)
 
-    #Release resources
+    # Release resources
     del image_scraper
+
+
 def load_search_terms() -> List[str]:
-    with open(join('input', 'products.txt')) as f:
+    with open(join("input", "products.txt")) as f:
         terms = f.readlines()
-        return [term.replace("\n", '') for term in terms]
+        return [term.replace("\n", "") for term in terms]
+
 
 if __name__ == "__main__":
-    #Define file path
-    webdriver_path = os.path.normpath(os.path.join(os.getcwd(), 'webdriver', webdriver_executable()))
-    image_path = os.path.normpath(os.path.join(os.getcwd(), 'photos'))
+    # Define file path
+    webdriver_path = os.path.normpath(
+        os.path.join(os.getcwd(), "webdriver", webdriver_executable())
+    )
+    image_path = os.path.normpath(os.path.join(os.getcwd(), "photos"))
 
     description_path = os.path.normpath(os.path.join(os.getcwd(), 'descriptions'))
 
