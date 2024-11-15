@@ -12,3 +12,4 @@ photos
 webdriver/chromedriver.exe
 webdriver/LICENSE.chromedriver
 .idea
+.env
