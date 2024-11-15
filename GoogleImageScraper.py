@@ -5,6 +5,7 @@ Created on Nov 11th 2024
 @author: PrettyBoyHelios
 """
 import base64
+
 # import selenium drivers
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options

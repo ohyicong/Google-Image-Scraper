@@ -91,11 +91,8 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
         with requests.get(driver_url, stream=True) as response:
             response.raise_for_status()  # Check if the request was successful
             with open(file_path, "wb") as file:
-                for chunk in response.iter_content(
-                    chunk_size=8192
-                ):
+                for chunk in response.iter_content(chunk_size=8192):
                     file.write(chunk)
-
 
         webdriver_path = os.path.normpath(os.path.join(app_path, "webdriver"))
         with zipfile.ZipFile(file_path, "r") as zip_file:
