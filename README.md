@@ -28,7 +28,7 @@ Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
     max_missed          = Maximum number of failed image grabs before program terminates. Increase this number to ensure large queries do not exit.
     number_of_workers   = Number of sectioned jobs created. Restricted to one worker per search term and thread.
     ```
-4. Run the program
+5. Run the program
     ```
     uv run python main.py
     ```
@@ -37,5 +37,5 @@ Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 This project was created to bypass Google Chrome's new restrictions on web scraping from Google Images. 
 To use it, define your desired parameters in main.py and run through the command line:
 ```
-python main.py
+uv run python main.py
 ```

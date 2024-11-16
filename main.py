@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul 12 11:02:06 2020
-
-@author: OHyic
-
-"""
-# Import libraries
 import os
+import logging
 import concurrent.futures
 from typing import List
 
@@ -16,9 +9,11 @@ from patch import webdriver_executable
 from os.path import join
 
 from services.gspread_service import GoogleSheetsService
+from services.openai_service import OpenAIService
 
 
 def worker_thread_descriptions(search_key):
+    openai_service = OpenAIService()
     description_scraper = GoogleAISiteScrapper(
         webdriver_path,
         description_path,
@@ -26,9 +21,10 @@ def worker_thread_descriptions(search_key):
         number_of_results=1,
         headless=headless,
     )
-    description = description_scraper.find_product_description()
+    description = description_scraper.find_product_description(openai_service)
     print(description)
     del description_scraper
+    del openai_service
 
 
 def worker_thread(search_key):
@@ -41,12 +37,9 @@ def worker_thread(search_key):
         min_resolution,
         max_resolution,
         max_missed,
-        use_brave=True,
+        use_brave=False,
     )
-    image_urls = image_scraper.find_image_urls()
-    # image_scraper.save_images(image_urls, keep_filenames)
-
-    # Release resources
+    image_scraper.find_image_urls()
     del image_scraper
 
 
@@ -58,6 +51,7 @@ def load_search_terms() -> List[str]:
 
 if __name__ == "__main__":
     # Define file path
+    logging.basicConfig(level=logging.INFO)
     gs_service = GoogleSheetsService()
 
     webdriver_path = os.path.normpath(

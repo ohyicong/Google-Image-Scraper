@@ -7,7 +7,9 @@ requires-python = ">=3.10"
 dependencies = [
     "bs4>=0.0.2",
     "gspread>=6.1.4",
+    "openai>=1.54.4",
     "pillow>=11.0.0",
+    "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "selenium>=4.26.1",
 ]

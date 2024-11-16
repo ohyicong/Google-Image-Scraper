@@ -3,7 +3,6 @@ import patch
 import re
 import time
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,7 +10,10 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     ElementClickInterceptedException,
 )
+import logging
 from bs4 import BeautifulSoup
+
+from services.openai_service import OpenAIService
 
 
 class GoogleAISiteScrapper:
@@ -22,6 +24,7 @@ class GoogleAISiteScrapper:
         search_key="",
         number_of_results=1,
         headless=True,
+        use_brave=False,
     ):
         # check parameter types
         output_path = os.path.join(description_path, search_key)
@@ -41,39 +44,49 @@ class GoogleAISiteScrapper:
                 )
 
         for i in range(1):
+            options = webdriver.ChromeOptions()
+            if headless:
+                options.add_argument("--headless")
+            if use_brave:
+                options.binary_location = (
+                    "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+                )
+            # options.binary_location = chrome_bin # todo need to fix for chrome bin
+
+            service = webdriver.ChromeService(executable_path=webdriver_path)
+
+            self.driver = webdriver.Chrome(service=service, options=options)
+
+            # driver = webdriver.Chrome(options=options, executable_path=webdriver_path)
+            self.driver.set_window_size(1400, 1050)
+            self.driver.get("https://www.google.com")
             try:
-                # try going to www.google.com
-                options = Options()
-                if headless:
-                    options.add_argument("--headless")
-                driver = webdriver.Chrome(webdriver_path, chrome_options=options)
-                driver.set_window_size(1400, 1050)
-                driver.get("https://www.google.com")
-                try:
-                    WebDriverWait(driver, 5).until(
-                        EC.element_to_be_clickable((By.ID, "W0wltc"))
-                    ).click()
-                except Exception as e:
-                    continue
+                WebDriverWait(self.driver, 5).until(
+                    EC.element_to_be_clickable((By.ID, "APjFqb"))
+                ).click()
+            except Exception as e:
+                logging.warning(e)
+                logging.warning("timeout detected, ids and xpaths may have changed")
+                continue
             except Exception as e:
                 # update chromedriver
+                print(e)
                 pattern = "(\d+\.\d+\.\d+\.\d+)"
                 version = list(set(re.findall(pattern, str(e))))[0]
-                is_patched = patch.download_lastest_chromedriver(version)
+                is_patched = patch.download_latest_chromedriver(version)
                 if not is_patched:
                     exit(
                         "[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads"
                     )
 
-        self.driver = driver
         self.search_key = search_key
         self.number_of_results = number_of_results
         self.webdriver_path = webdriver_path
         self.image_path = output_path
-        self.url = "https://www.google.com/search?q=%s" % (search_key)
+        self.url = "https://www.google.com/search?q={}".format(search_key)
         self.headless = headless
 
-    def find_product_description(self):
+    def find_product_description(self, openai_service: OpenAIService):
         """
         This function search and return a list of image urls based on the search key.
         Example:
@@ -81,27 +94,45 @@ class GoogleAISiteScrapper:
             image_urls = google_image_scraper.find_image_urls()
 
         """
-        SLEEP_TIME = 1
-        print("[INFO] Gathering image links")
+        logging.info("[INFO] Gathering image links")
         self.driver.get(self.url)
-        image_urls = []
         count = 0
-        missed_count = 0
         time.sleep(3)
 
         while self.number_of_results > count:
             results = self.driver.find_elements(
                 by=By.XPATH, value="//h3[contains(@class,'LC20lb MBeuO DKV0Md')]"
             )
-            time.sleep(3)
+            _ = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//h3[contains(@class,'LC20lb MBeuO DKV0Md')]")
+                )
+            )
             for result in results:
                 result.click()
 
-                url = self.driver.current_url
+                logging.info(
+                    "waiting for {} to load...".format(self.driver.current_url)
+                )
+                WebDriverWait(self.driver, 10).until(
+                    lambda driver: driver.execute_script("return document.readyState")
+                    == "complete"
+                )
+                logging.info("loaded site {}".format(self.driver.current_url))
+
+                url = self.driver.page_source
                 website_data = BeautifulSoup(url, "html.parser")
-                print(url)
-
+                for tag in website_data(
+                    ["script", "style", "button", "nav", "footer", "header", "aside"]
+                ):
+                    tag.decompose()  # Remove the tag from the parsed HTML
                 str_repr = website_data.get_text()
-                print(str_repr)
 
-        self.driver.quit()
+                # Replace multiple line breaks with a single one
+                str_repr = re.sub(r"\n+", "\n", str_repr)
+
+                description = openai_service.get_product_description(
+                    self.search_key, str_repr
+                )
+                self.driver.quit()
+                return description
