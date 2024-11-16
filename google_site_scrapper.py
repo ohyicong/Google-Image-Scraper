@@ -90,7 +90,11 @@ class GoogleAISiteScrapper:
         self.url = "https://www.google.com/search?q={}".format(search_key)
         self.headless = headless
 
-    def find_product_description(self, openai_service: OpenAIService, google_sheets_service: Optional[GoogleSheetsService] = None):
+    def find_product_description(
+        self,
+        openai_service: OpenAIService,
+        google_sheets_service: Optional[GoogleSheetsService] = None,
+    ):
         """
         This function search and return a list of image urls based on the search key.
         Example:
@@ -140,8 +144,14 @@ class GoogleAISiteScrapper:
                 )
                 self.driver.quit()
                 if google_sheets_service:
-                    google_sheets_service.update_description(self.search_key, description, "Product", "Description")
+                    google_sheets_service.update_description(
+                        self.search_key, description, "Product", "Description"
+                    )
                 else:
-                    with open(join(self.description_path, "description.txt"), "w", encoding="utf8") as f:
+                    with open(
+                        join(self.description_path, "description.txt"),
+                        "w",
+                        encoding="utf8",
+                    ) as f:
                         f.write(description)
                 return description
