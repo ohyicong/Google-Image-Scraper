@@ -41,7 +41,7 @@ class GoogleAISiteScrapper:
 
         # check if chromedriver is installed
         if not os.path.isfile(webdriver_path):
-            is_patched = patch.download_lastest_chromedriver()
+            is_patched = patch.download_latest_chromedriver()
             if not is_patched:
                 exit(
                     "[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads"
@@ -102,11 +102,12 @@ class GoogleAISiteScrapper:
             image_urls = google_image_scraper.find_image_urls()
 
         """
-        logging.info("[INFO] Gathering image links")
         self.driver.get(self.url)
         count = 0
-        time.sleep(3)
-
+        WebDriverWait(self.driver, 10).until(
+            lambda driver: driver.execute_script("return document.readyState")
+            == "complete"
+        )
         while self.number_of_results > count:
             results = self.driver.find_elements(
                 by=By.XPATH, value="//h3[contains(@class,'LC20lb MBeuO DKV0Md')]"
