@@ -22,7 +22,6 @@ def worker_thread_descriptions(search_key):
         headless=headless,
     )
     description = description_scraper.find_product_description(openai_service)
-    print(description)
     del description_scraper
     del openai_service
 
@@ -62,7 +61,6 @@ if __name__ == "__main__":
     # Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
     # search_keys = load_search_terms()
     search_keys = gs_service.get_items("Product", "Images found")
-    print(search_keys)
     description_path = os.path.normpath(os.path.join(os.getcwd(), "descriptions"))
 
     # Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
@@ -74,7 +72,7 @@ if __name__ == "__main__":
     min_resolution = (0, 0)  # Minimum desired image resolution
     max_resolution = (9999, 9999)  # Maximum desired image resolution
     max_missed = 10  # Max number of failed images before exit
-    number_of_workers = 1  # Number of "workers" used
+    number_of_workers = 16  # Number of "workers" used
     keep_filenames = False  # Keep original URL image filenames
 
     # Run each search_key in a separate thread

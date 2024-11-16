@@ -2,6 +2,7 @@ import os
 import patch
 import re
 import time
+from os.path import join
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -82,7 +83,7 @@ class GoogleAISiteScrapper:
         self.search_key = search_key
         self.number_of_results = number_of_results
         self.webdriver_path = webdriver_path
-        self.image_path = output_path
+        self.description_path = output_path
         self.url = "https://www.google.com/search?q={}".format(search_key)
         self.headless = headless
 
@@ -135,4 +136,6 @@ class GoogleAISiteScrapper:
                     self.search_key, str_repr
                 )
                 self.driver.quit()
+                with open(join(self.description_path, "description.txt"), "w", encoding="utf8") as f:
+                    f.write(description)
                 return description
