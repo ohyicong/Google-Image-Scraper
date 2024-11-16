@@ -16,7 +16,7 @@ Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
     ```
 3. Install Dependencies
     ```
-    pip install -r requirements.txt
+    uv sync
     ```
 4. Edit your desired parameters in main.py
     ```
@@ -30,7 +30,7 @@ Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
     ```
 4. Run the program
     ```
-    python main.py
+    uv run python main.py
     ```
 
 ## Usage:
@@ -39,14 +39,3 @@ To use it, define your desired parameters in main.py and run through the command
 ```
 python main.py
 ```
-
-## Youtube Video:
-[![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
-
-
-## IMPORTANT:
-Although it says so in the video, this program will not run through VSCode. It must be run in the command line.
-
-This program will install an updated webdriver automatically. There is no need to install your own.
-
-### Please like, subscribe, and share if you found my project helpful! 
