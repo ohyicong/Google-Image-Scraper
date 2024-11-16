@@ -15,3 +15,4 @@ webdriver/LICENSE.chromedriver
 webdriver/chromedriver
 webdriver/THIRD_PARTY_NOTICES.chromedriver
 .DS_Store
+services/__pycache__/gspread_service.cpython-310.pyc

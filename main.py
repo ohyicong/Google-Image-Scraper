@@ -14,6 +14,8 @@ from GoogleImageScraper import GoogleImageScraper
 from patch import webdriver_executable
 from os.path import join
 
+from services.gspread_service import GoogleSheetsService
+
 
 def worker_thread(search_key):
     image_scraper = GoogleImageScraper(
@@ -42,13 +44,16 @@ def load_search_terms() -> List[str]:
 
 if __name__ == "__main__":
     # Define file path
+    gs_service = GoogleSheetsService()
+
     webdriver_path = os.path.normpath(
         os.path.join(os.getcwd(), "webdriver", webdriver_executable())
     )
     image_path = os.path.normpath(os.path.join(os.getcwd(), "photos"))
 
     # Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
-    search_keys = load_search_terms()
+    # search_keys = load_search_terms()
+    search_keys = gs_service.get_items("Product", "Images found")
 
     # Parameters
     number_of_images = 3  # Desired number of images
