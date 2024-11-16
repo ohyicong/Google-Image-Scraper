@@ -62,13 +62,14 @@ if __name__ == "__main__":
     )
     image_path = os.path.normpath(os.path.join(os.getcwd(), "photos"))
 
-    # Add new search key into array ["cat","t-shirt","apple","orange","pear","fish"]
     # search_keys = load_search_terms()
     search_keys = gs_service.get_items()
     logging.info("searching for {} items...".format(len(search_keys)))
     description_path = os.path.normpath(os.path.join(os.getcwd(), "descriptions"))
 
     # search_keys = load_search_terms()
+    num_cores = os.cpu_count()
+    logging.info("using {} cores".format(num_cores))
 
     # Parameters
     number_of_images = 5  # Desired number of images
@@ -76,7 +77,7 @@ if __name__ == "__main__":
     min_resolution = (0, 0)  # Minimum desired image resolution
     max_resolution = (9999, 9999)  # Maximum desired image resolution
     max_missed = 10  # Max number of failed images before exit
-    number_of_workers = 12  # Number of "workers" used
+    number_of_workers = num_cores  # Number of "workers" used
     keep_filenames = False  # Keep original URL image filenames
 
     # Run each search_key in a separate thread
