@@ -25,5 +25,3 @@ class GoogleSheetsService:
             if not row_dict[done_column]:
                 items_to_find.append(row_dict[product_list_column])
         return items_to_find
-
-

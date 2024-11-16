@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from os import getenv
 
+
 class OpenAIService:
     def __init__(self):
         load_dotenv()
@@ -16,7 +17,7 @@ class OpenAIService:
                 {
                     "role": "user",
                     "content": "Say this is a test",
-                }
+                },
             ],
             model="gpt-3.5-turbo",
         )
