@@ -11,6 +11,39 @@ from os.path import join
 from services.gspread_service import GoogleSheetsService
 from services.openai_service import OpenAIService
 
+def worker_experiment(search_key):
+    openai_service = OpenAIService()
+    sheets_service = GoogleSheetsService()
+
+    logging.info("retrieving description...")
+    description_scraper = GoogleAISiteScrapper(
+        webdriver_path,
+        description_path,
+        search_key,
+        number_of_results=1,
+        headless=headless,
+        use_brave=True,
+    )
+    description_scraper.find_product_description(openai_service, sheets_service)
+    del description_scraper
+    logging.info("retrieving images...")
+
+    image_scraper = GoogleImageScraper(
+        webdriver_path,
+        image_path,
+        search_key,
+        number_of_images,
+        headless,
+        min_resolution,
+        max_resolution,
+        max_missed,
+        use_brave=True,
+    )
+    image_scraper.find_image_urls()
+
+    del image_scraper
+    del openai_service
+    del sheets_service
 
 def worker_thread_descriptions(search_key):
     openai_service = OpenAIService()
@@ -79,7 +112,7 @@ if __name__ == "__main__":
     min_resolution = (0, 0)  # Minimum desired image resolution
     max_resolution = (9999, 9999)  # Maximum desired image resolution
     max_missed = 10  # Max number of failed images before exit
-    number_of_workers = 1  # Number of "workers" used
+    number_of_workers = num_cores  # Number of "workers" used
     keep_filenames = False  # Keep original URL image filenames
 
     # Run each search_key in a separate thread
@@ -88,4 +121,4 @@ if __name__ == "__main__":
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=number_of_workers
     ) as executor:
-        executor.map(worker_thread_descriptions, search_keys)
+        executor.map(worker_experiment, search_keys)

@@ -62,7 +62,6 @@ class GoogleAISiteScrapper:
                 }
 
                 options.binary_location = brave_platform_default_locations[sys.platform]
-            # options.binary_location = chrome_bin # todo need to fix for chrome bin
 
             service = webdriver.ChromeService(executable_path=webdriver_path)
 
@@ -89,6 +88,7 @@ class GoogleAISiteScrapper:
                     exit(
                         "[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads"
                     )
+                raise e
 
         self.search_key = search_key
         self.number_of_results = number_of_results
