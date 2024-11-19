@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Optional
 
 import patch
@@ -52,9 +53,15 @@ class GoogleAISiteScrapper:
             if headless:
                 options.add_argument("--headless")
             if use_brave:
-                options.binary_location = (
-                    "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
-                )
+                if sys.platform not in ['darwin', 'win32']:
+                    raise ValueError('this script is unsupported for {}'.format(sys.platform))
+
+                brave_platform_default_locations = {
+                    'win32': r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+                    'darwin': "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+                }
+
+                options.binary_location = brave_platform_default_locations[sys.platform]
             # options.binary_location = chrome_bin # todo need to fix for chrome bin
 
             service = webdriver.ChromeService(executable_path=webdriver_path)
