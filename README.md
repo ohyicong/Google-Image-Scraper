@@ -4,9 +4,8 @@ If you are looking for other image scrapers, JJLimmm has created image scrapers 
 Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
 ## Pre-requisites:
-1. Google Chrome
-2. Python3 packages (Pillow, Selenium, Requests)
-3. Windows OS (Other OS is not tested)
+1. Google Chrome or Brave Browser Installed in default paths
+2. [uv](https://docs.astral.sh/uv/)
 
 ## Setup:
 1. Open command prompt
