@@ -134,7 +134,9 @@ class GoogleImageScraper:
             full_path = os.path.join(self.image_path, image)
             file_id = google_drive_service.upload_image_to_drive(full_path, folder_id)
             url = google_drive_service.set_file_public(file_id)
-            google_sheets_service.update_product_image(self.search_key, url, "Nombre del artículo", "AI Image", "Processed")
+            google_sheets_service.update_product_image(
+                self.search_key, url, "Nombre del artículo", "AI Image", "Processed"
+            )
             break
 
     def find_image_urls(self):

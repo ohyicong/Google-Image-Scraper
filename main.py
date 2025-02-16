@@ -82,7 +82,9 @@ def worker_thread(search_key):
         use_brave=False,
     )
     image_scraper.find_image_urls()
-    image_scraper.update_product_images("inventario", sheets_service, google_drive_service)
+    image_scraper.update_product_images(
+        "inventario", sheets_service, google_drive_service
+    )
     del image_scraper
     del sheets_service
     del google_drive_service

@@ -50,7 +50,7 @@ def download_latest_chromedriver(current_chrome_version="133") -> bool:
             else:
                 return "win32"
 
-        raise ValueError(f'unsupported platform {p}')
+        raise ValueError(f"unsupported platform {p}")
 
     # Find the latest chromedriver, download, unzip, set permissions to executable.
 
