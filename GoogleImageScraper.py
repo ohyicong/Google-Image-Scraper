@@ -38,7 +38,8 @@ class GoogleImageScraper:
         self,
         webdriver_path: str,
         image_path: str,
-        search_key: str = "cat",
+        sku: str,
+        search_key: str,
         number_of_images: int = 1,
         headless: bool = True,
         min_resolution: Tuple[int, int] = (0, 0),
@@ -47,7 +48,7 @@ class GoogleImageScraper:
         use_brave: bool = False,
     ):
         # check parameter types
-        image_path = os.path.join(image_path, search_key)
+        image_path = os.path.join(image_path, sku)
         if type(number_of_images) != int:
             print("[Error] Number of images must be integer value.")
             return
@@ -105,6 +106,7 @@ class GoogleImageScraper:
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
+        self.sku = sku
         self.url = (
             "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"
             % search_key
@@ -137,7 +139,7 @@ class GoogleImageScraper:
             google_sheets_service.update_product_image(
                 self.search_key, url, "Nombre del artículo", "AI Image", "Processed"
             )
-            break
+            break  # only uploads first image
 
     def find_image_urls(self):
         """
@@ -195,16 +197,16 @@ class GoogleImageScraper:
                             src += actual_img.get_attribute("src")
 
                     if "https://" in src:
-                        image_name = self.search_key.replace("/", " ")
+                        image_name = self.sku.replace("/", " ")
                         image_name = re.sub(pattern=" ", repl="_", string=image_name)
-                        file_path = f"{self.image_path}/{count}_{image_name}.jpeg"
+                        file_path = f"{self.image_path}/{image_name}_{count}.jpeg"  # todo figure out image naming conventions for yaab
                         try:
                             result = requests.get(src, allow_redirects=True, timeout=10)
                             open(file_path, "wb").write(result.content)
                             img = Image.open(file_path)
                             img = img.convert("RGB")
                             img.save(file_path, "JPEG")
-                            print("Image saved from https.")
+                            print(f"Image saved from https to path {file_path}")
                             image_urls.append(src)
                         except Exception as e:
                             print("Bad image.")
@@ -215,14 +217,14 @@ class GoogleImageScraper:
                             count -= 1
                     else:
                         img_data = src.split(",")
-                        image_name = self.search_key.replace("/", " ")
+                        image_name = self.sku.replace("/", " ")
                         image_name = re.sub(pattern=" ", repl="_", string=image_name)
-                        file_path = f"{self.image_path}/{count}_{image_name}.jpeg"
+                        file_path = f"{self.image_path}/{image_name}_{count}.jpeg"  # todo figure out image naming conventions for yaab
                         try:
                             img = Image.open(io.BytesIO(base64.b64decode(img_data[1])))
                             img = img.convert("RGB")
                             img.save(file_path, "JPEG")
-                            print("Image saved from Base64.")
+                            print(f"Image saved from Base64 to path {file_path}")
                             image_urls.append(src)
                         except Exception as e:
                             print("Bad image.")

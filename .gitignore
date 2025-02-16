@@ -18,3 +18,4 @@ webdriver/THIRD_PARTY_NOTICES.chromedriver
 .DS_Store
 descriptions/*
 services/__pycache__/*
+photos.zip

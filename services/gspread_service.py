@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import gspread
 import re
@@ -21,19 +21,19 @@ class GoogleSheetsService:
         done_column="Processed",
         sku_column: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> List[str]:
+    ) -> List[Tuple[str, str]]:
         """
-        Will return the values in the product_list:column that have nothing on the done_column
+        Will return the values in the product_list:column that have nothing on the done_column, this returns a tuple with the product ID for image storage and the search query
         :param limit: for testing, specify the amount of max items you want to iterate on
-        :param sku_column:
-        :param product_list_column:
-        :param done_column:
-        :return:
+        :param sku_column: the column name for the SKU unique identifier for a product
+        :param product_list_column: column name for the human-readable name for a product
+        :param done_column: column name for the processing status of the product row, true means it has already been processed by AI
+        :return aa tuple containing the product ID for image storage and the search query
         """
         rows = self.wks.get_all_values()
         headers = rows[0]
 
-        items_to_find = []
+        items_to_find: List[Tuple[str, str]] = []
         if limit is not None:
             iterable_rows = rows[1 : limit + 1]
         else:
@@ -47,7 +47,7 @@ class GoogleSheetsService:
                 search_string = cleaned_product
                 if sku_column is not None:
                     search_string = f"{search_string} ({row_dict[sku_column]})"
-                items_to_find.append(search_string)
+                items_to_find.append((row_dict[sku_column], search_string))
         return items_to_find
 
     def update_description(

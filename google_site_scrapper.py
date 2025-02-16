@@ -26,13 +26,16 @@ class GoogleAISiteScrapper:
         self,
         webdriver_path,
         description_path,
+        sku,
         search_key="",
         number_of_results=1,
         headless=True,
         use_brave=False,
     ):
         # check parameter types
-        output_path = os.path.join(description_path, search_key)
+        output_path = os.path.join(
+            description_path, sku
+        )  # todo check if this value is the sku
         if type(number_of_results) != int:
             print("[Error] Number of images must be integer value.")
             return
@@ -61,6 +64,7 @@ class GoogleAISiteScrapper:
                 brave_platform_default_locations = {
                     "win32": r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
                     "darwin": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+                    "win64": r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
                 }
 
                 options.binary_location = brave_platform_default_locations[sys.platform]

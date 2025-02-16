@@ -4,14 +4,24 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from os import getenv
 
+from yaab.gpt_models.models import GPTDescriptionResponse
+
 
 class OpenAIService:
     def __init__(self):
         load_dotenv()
         self.client = OpenAI(api_key=getenv("OPENAI_API_KEY"))
 
-    def get_product_description(self, product: str, website_content: str) -> str:
-        chat_completion = self.client.chat.completions.create(
+    def get_product_description(
+        self, product: str, website_content: str
+    ) -> GPTDescriptionResponse:
+        """
+        This gets a product's description by analyzing the webpage, and also attempts to find product dimensions.
+        :param product:
+        :param website_content:
+        :return:
+        """
+        chat_completion = self.client.beta.chat.completions.parse(
             messages=[
                 {
                     "role": "system",
@@ -23,5 +33,10 @@ class OpenAIService:
                 },
             ],
             model="gpt-4o-mini",
+            response_format=GPTDescriptionResponse,
         )
-        return chat_completion.choices[0].message.content
+        try:
+            return chat_completion.choices[0].message.parsed
+        except Exception as e:
+            print(chat_completion.choices)
+            raise Exception("error on chatgpt parsed output")

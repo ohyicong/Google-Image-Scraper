@@ -16,6 +16,7 @@ from services.openai_service import OpenAIService
 def worker_experiment(search_key):
     openai_service = OpenAIService()
     sheets_service = GoogleSheetsService()
+    product_sku, product_query = search_key
 
     logging.info("retrieving description...")
     description_scraper = GoogleAISiteScrapper(
@@ -33,7 +34,8 @@ def worker_experiment(search_key):
     image_scraper = GoogleImageScraper(
         webdriver_path,
         image_path,
-        search_key,
+        product_sku,
+        product_query,
         number_of_images,
         headless,
         min_resolution,
@@ -52,10 +54,12 @@ def worker_thread_descriptions(search_key):
     openai_service = OpenAIService()
     sheets_service = GoogleSheetsService("Inventario", "Inventario")
 
+    product_sku, product_query = search_key
+
     description_scraper = GoogleAISiteScrapper(
         webdriver_path,
         description_path,
-        search_key,
+        product_query,
         number_of_results=1,
         headless=headless,
         use_brave=True,
@@ -70,10 +74,13 @@ def worker_thread(search_key):
     sheets_service = GoogleSheetsService("Inventario", "Inventario")
     google_drive_service = GoogleDriveService()
 
+    product_sku, product_query = search_key
+
     image_scraper = GoogleImageScraper(
         webdriver_path,
         image_path,
-        search_key,
+        product_sku,
+        product_query,
         number_of_images,
         headless,
         min_resolution,
@@ -82,9 +89,9 @@ def worker_thread(search_key):
         use_brave=False,
     )
     image_scraper.find_image_urls()
-    image_scraper.update_product_images(
-        "inventario", sheets_service, google_drive_service
-    )
+    # image_scraper.update_product_images(
+    #     "inventario", sheets_service, google_drive_service
+    # )
     del image_scraper
     del sheets_service
     del google_drive_service
@@ -110,7 +117,8 @@ if __name__ == "__main__":
     search_keys = gs_service.get_items(
         product_list_column="Nombre del artículo",
         done_column="Processed",
-        sku_column="ID del artículo",
+        sku_column="SKU",
+        limit=2,
     )
     logging.info("searching for {} items...".format(len(search_keys)))
     description_path = os.path.normpath(os.path.join(os.getcwd(), "descriptions"))
@@ -125,7 +133,7 @@ if __name__ == "__main__":
     min_resolution = (0, 0)  # Minimum desired image resolution
     max_resolution = (9999, 9999)  # Maximum desired image resolution
     max_missed = 10  # Max number of failed images before exit
-    number_of_workers = 16  # Number of "workers" used
+    number_of_workers = 1  # Number of "workers" used
     keep_filenames = False  # Keep original URL image filenames
 
     # Run each search_key in a separate thread
