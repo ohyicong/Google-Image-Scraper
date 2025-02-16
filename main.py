@@ -54,15 +54,17 @@ def worker_thread_descriptions(search_key):
     openai_service = OpenAIService()
     sheets_service = GoogleSheetsService("Inventario", "Inventario")
 
-    product_sku, product_query = search_key
+    product_sku, product_query, product = search_key
 
     description_scraper = GoogleAISiteScrapper(
         webdriver_path,
         description_path,
+        product_sku,
+        product,
         product_query,
         number_of_results=1,
         headless=headless,
-        use_brave=True,
+        use_brave=False,
     )
     description_scraper.find_product_description(openai_service, sheets_service)
     del description_scraper
@@ -74,7 +76,7 @@ def worker_thread(search_key):
     sheets_service = GoogleSheetsService("Inventario", "Inventario")
     google_drive_service = GoogleDriveService()
 
-    product_sku, product_query = search_key
+    product_sku, product_query, _ = search_key
 
     image_scraper = GoogleImageScraper(
         webdriver_path,
@@ -142,4 +144,4 @@ if __name__ == "__main__":
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=number_of_workers
     ) as executor:
-        executor.map(worker_thread, search_keys)
+        executor.map(worker_thread_descriptions, search_keys)

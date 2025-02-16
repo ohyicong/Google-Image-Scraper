@@ -1,11 +1,13 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class Dimensions(BaseModel):
-    width: int
-    length: int
-    height: int
-    units: str
+    width: Optional[int]
+    length: Optional[int]
+    height: Optional[int]
+    units: Optional[str]
 
 
 class GPTDescriptionResponse(BaseModel):

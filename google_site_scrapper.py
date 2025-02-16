@@ -1,5 +1,6 @@
 import os
 import sys
+from itertools import product
 from typing import Optional
 
 import patch
@@ -19,6 +20,7 @@ from bs4 import BeautifulSoup
 
 from services.gspread_service import GoogleSheetsService
 from services.openai_service import OpenAIService
+from yaab.inventory_models.models import YaabProduct, output_to_csv
 
 
 class GoogleAISiteScrapper:
@@ -27,6 +29,7 @@ class GoogleAISiteScrapper:
         webdriver_path,
         description_path,
         sku,
+        product,
         search_key="",
         number_of_results=1,
         headless=True,
@@ -102,6 +105,7 @@ class GoogleAISiteScrapper:
         self.description_path = output_path
         self.url = "https://www.google.com/search?q={}".format(search_key)
         self.headless = headless
+        self.product: YaabProduct = product
 
     def find_product_description(
         self,
@@ -161,15 +165,20 @@ class GoogleAISiteScrapper:
                 if google_sheets_service:
                     google_sheets_service.update_description(
                         self.search_key,
-                        description,
+                        description.description,
                         "Nombre del artículo",
                         "AI Description",
                     )
                 else:
+                    output_path = join(self.description_path, "description.txt")
                     with open(
                         join(self.description_path, "description.txt"),
                         "w",
                         encoding="utf8",
                     ) as f:
-                        f.write(description)
+                        f.write(description.description)
+                    print(f"description written to {output_path}")
+                    self.product.dimensions = description.dimensions
+                    self.product.ai_description = description.description
+                    output_to_csv([self.product])
                 return description

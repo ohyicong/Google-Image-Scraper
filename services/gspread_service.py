@@ -3,6 +3,8 @@ from typing import List, Optional, Tuple
 import gspread
 import re
 
+from yaab.inventory_models.models import YaabProduct
+
 
 class GoogleSheetsService:
     def __init__(
@@ -21,7 +23,7 @@ class GoogleSheetsService:
         done_column="Processed",
         sku_column: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> List[Tuple[str, str]]:
+    ) -> List[Tuple[str, str, YaabProduct]]:
         """
         Will return the values in the product_list:column that have nothing on the done_column, this returns a tuple with the product ID for image storage and the search query
         :param limit: for testing, specify the amount of max items you want to iterate on
@@ -33,7 +35,7 @@ class GoogleSheetsService:
         rows = self.wks.get_all_values()
         headers = rows[0]
 
-        items_to_find: List[Tuple[str, str]] = []
+        items_to_find: List[Tuple[str, str, YaabProduct]] = []
         if limit is not None:
             iterable_rows = rows[1 : limit + 1]
         else:
@@ -47,7 +49,10 @@ class GoogleSheetsService:
                 search_string = cleaned_product
                 if sku_column is not None:
                     search_string = f"{search_string} ({row_dict[sku_column]})"
-                items_to_find.append((row_dict[sku_column], search_string))
+                yaab_product = YaabProduct.get_product_from_row(row_dict)
+                items_to_find.append(
+                    (row_dict[sku_column], search_string, yaab_product)
+                )
         return items_to_find
 
     def update_description(

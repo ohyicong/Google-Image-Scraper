@@ -1,25 +1,11 @@
-import decimal
 import os
-from typing import List, Optional
+from typing import List
 
 import requests
-from pydantic import BaseModel
 from dotenv import load_dotenv
 
 from yaab.api_models.models import Category, ExtraField, Variante, Producto
-
-
-class YaabProduct(BaseModel):
-    sku: str
-    name: str
-    category: str
-    min_price: decimal.Decimal
-    price: decimal.Decimal
-    stock: int
-    status: str
-    description: str
-    colors: List[str]
-    ai_description: Optional[str] = None
+from yaab.inventory_models.models import YaabProduct
 
 
 class YaabStoreService:
@@ -59,10 +45,12 @@ class YaabStoreService:
             categories.append(Category(**cat))
         return categories
 
-    def create_product(self, product: YaabProduct):
+    def create_product(
+        self, product: YaabProduct
+    ):  # ideally this method is able to create a product from the scraping model, but it may require a lot of further work, currently exploring csv uploads
         url = self.base_url + "/categorias"
 
-        mock_producto = Producto(
+        mock_product = Producto(
             categoria=1,
             descripcion="Producto de prueba",
             detalles="Detalles adicionales del producto",
@@ -92,7 +80,7 @@ class YaabStoreService:
             ],
         )
         # todo test
-        res = requests.post(url, json=mock_producto.model_dump_json())
+        res = requests.post(url, json=mock_product.model_dump_json())
         data = res.json()
 
         return data  # todo parse into pydantic response object, need api for this
