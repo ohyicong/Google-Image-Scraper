@@ -89,7 +89,7 @@ class GoogleImageScraper():
         missed_count = 0
         indx_1 = 0
         indx_2 = 0
-        search_string = '//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'
+        search_string = '//*[@id="rso"]/div/div/div[1]/div/div/div[%s]/div[2]/h3/a/div/div/div/g-img'
         time.sleep(3)
         while self.number_of_images > count and missed_count < self.max_missed:
             if indx_2 > 0:
@@ -115,11 +115,10 @@ class GoogleImageScraper():
                     indx_1 = indx_1 + 1    
                 except Exception:
                     try:
-                        imgurl = self.driver.find_element(By.XPATH, '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'%(indx_1,indx_2+1))
+                        imgurl = self.driver.find_element(By.XPATH, search_string%(indx_1,indx_2+1))
                         imgurl.click()
                         missed_count = 0
                         indx_2 = indx_2 + 1
-                        search_string = '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'
                     except Exception:
                         indx_1 = indx_1 + 1
                         missed_count = missed_count + 1
@@ -127,7 +126,7 @@ class GoogleImageScraper():
             try:
                 #select image from the popup
                 time.sleep(1)
-                class_names = ["n3VNCb","iPVvYb","r48jcc","pT0Scc"]
+                class_names = ["n3VNCb","iPVvYb","r48jcc","pT0Scc","H8Rx8c"]
                 images = [self.driver.find_elements(By.CLASS_NAME, class_name) for class_name in class_names if len(self.driver.find_elements(By.CLASS_NAME, class_name)) != 0 ][0]
                 for image in images:
                     #only download images that starts with http
