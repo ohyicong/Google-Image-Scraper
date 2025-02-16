@@ -22,12 +22,15 @@ import requests
 import io
 from PIL import Image
 import re
-from typing import Tuple
+from typing import Tuple, Optional
 from urllib.parse import urlparse
 
 
 import patch
 import logging
+
+from services.gdrive_service import GoogleDriveService
+from services.gspread_service import GoogleSheetsService
 
 
 class GoogleImageScraper:
@@ -111,6 +114,28 @@ class GoogleImageScraper:
         self.max_resolution = max_resolution
         self.max_missed = max_missed
         self.use_brave = use_brave
+
+    def update_product_images(
+        self,
+        folder_name: Optional[str] = None,
+        google_sheets_service: Optional[GoogleSheetsService] = None,
+        google_drive_service: Optional[GoogleDriveService] = None,
+    ):
+        if folder_name is None:
+            raise ValueError("Upload folder not specifiedd")
+        if google_sheets_service is None:
+            google_sheets_service = GoogleSheetsService()
+        if google_drive_service is None:
+            google_drive_service = GoogleDriveService()
+
+        folder_id = google_drive_service.get_folder_id(folder_name)
+
+        for image in os.listdir(self.image_path):
+            full_path = os.path.join(self.image_path, image)
+            file_id = google_drive_service.upload_image_to_drive(full_path, folder_id)
+            url = google_drive_service.set_file_public(file_id)
+            google_sheets_service.update_product_image(self.search_key, url, "Nombre del artículo", "AI Image", "Processed")
+            break
 
     def find_image_urls(self):
         """

@@ -3,11 +3,11 @@ A library created to scrape Google Images.<br>
 If you are looking for other image scrapers, JJLimmm has created image scrapers for Gettyimages, Shutterstock, and Bing. <br>
 Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
 
-## Pre-requisites:
+## Pre-requisites
 1. Google Chrome or Brave Browser Installed in default paths
 2. [uv](https://docs.astral.sh/uv/)
 
-## Setup:
+## Setup
 1. Open command prompt
 2. Clone this repository (or [download](https://github.com/ohyicong/Google-Image-Scraper/archive/refs/heads/master.zip))
     ```
@@ -38,3 +38,9 @@ To use it, define your desired parameters in main.py and run through the command
 ```
 uv run python main.py
 ```
+## Yaab Instructions
+1. Descargar
+
+# Consideraciones
+El archivo que contiene la información de entrada de los productos tiene que tener las siguientes columnas.
+- SKU: ID o SKU del producto, tiene que coincidir con las especificaciones de Lions Intel para la cargar masiva de imágenes.

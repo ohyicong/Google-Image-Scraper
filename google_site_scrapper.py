@@ -53,12 +53,14 @@ class GoogleAISiteScrapper:
             if headless:
                 options.add_argument("--headless")
             if use_brave:
-                if sys.platform not in ['darwin', 'win32']:
-                    raise ValueError('this script is unsupported for {}'.format(sys.platform))
+                if sys.platform not in ["darwin", "win32"]:
+                    raise ValueError(
+                        "this script is unsupported for {}".format(sys.platform)
+                    )
 
                 brave_platform_default_locations = {
-                    'win32': r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
-                    'darwin': "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+                    "win32": r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+                    "darwin": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
                 }
 
                 options.binary_location = brave_platform_default_locations[sys.platform]
@@ -150,10 +152,14 @@ class GoogleAISiteScrapper:
                 description = openai_service.get_product_description(
                     self.search_key, str_repr
                 )
+                print(description)
                 self.driver.quit()
                 if google_sheets_service:
                     google_sheets_service.update_description(
-                        self.search_key, description, "Product", "Description"
+                        self.search_key,
+                        description,
+                        "Nombre del artículo",
+                        "AI Description",
                     )
                 else:
                     with open(

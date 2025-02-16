@@ -29,25 +29,28 @@ def webdriver_executable():
     return "chromedriver.exe"
 
 
-def download_latest_chromedriver(current_chrome_version="130") -> bool:
-    def get_platform_filename() -> str:
+def download_latest_chromedriver(current_chrome_version="133") -> bool:
+    def get_platform_prefix() -> str:
         is_64bits = sys.maxsize > 2**32
-        platform = sys_platform.system()
+        p = sys_platform.system()
 
-        if platform == "linux" or platform == "linux2":
+        if p == "linux" or p == "linux2":
             return "linux64"
 
-        elif platform == "Darwin":
+        elif p == "Darwin":
             machine = sys_platform.machine()
             if machine == "x86_64":
                 return "mac-x64"
             elif machine == "arm64":
                 return "mac-arm64"
 
-        elif platform == "win32":
-            return "win32"
+        elif p == "Windows":
+            if is_64bits:
+                return "win64"
+            else:
+                return "win32"
 
-        return filename
+        raise ValueError(f'unsupported platform {p}')
 
     # Find the latest chromedriver, download, unzip, set permissions to executable.
 
@@ -68,9 +71,9 @@ def download_latest_chromedriver(current_chrome_version="130") -> bool:
         else:
             for milestone in content["milestones"]:
                 downloads = content["milestones"][milestone]
-
+        current_platform = get_platform_prefix()
         for download in downloads["downloads"]["chromedriver"]:
-            if download["platform"] == get_platform_filename():
+            if download["platform"] == current_platform:
                 driver_url = download["url"]
 
         # Download the file.
