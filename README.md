@@ -39,6 +39,7 @@ To use it, define your desired parameters in main.py and run through the command
 ```
 python main.py
 ```
+*Note you may have to run 'headless = True' in order to manually accept googles privacy policy.
 
 ## Youtube Video:
 [![IMAGE ALT TEXT](https://github.com/ohyicong/Google-Image-Scraper/blob/master/youtube_thumbnail.PNG)](https://youtu.be/QZn_ZxpsIw4 "Google Image Scraper")
